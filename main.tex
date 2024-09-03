@@ -45,7 +45,7 @@
             \textbf{RELATÓRIO}\\[3,5cm]
         \end{huge}
 %% CSS: Podemos usar um título mais genérico agora e depois discutir um definitivo
-{\bf \LARGE  TÍTULO}
+{\bf \LARGE  CLASSIFICAÇÃO DE GLAUCOMA EM IMAGENS DE FUNDO DE OLHO COM APRENDIZAGEM PROFUNDA}
 
 \bigskip
         
@@ -58,7 +58,7 @@
     
     \begin{center}
         Santo André,\\
-        Agosto de 2024
+        Setembro de 2024
     \end{center}
     
     \newpage
@@ -73,7 +73,7 @@
 \end{quote}
 
 \begin{center}
-Santo André, julho de 2024
+Santo André, setembro de 2024
 \end{center}
 
 \newpage
@@ -104,15 +104,23 @@ routine eye examinations are recommended for high-risk individuals
 as early detection is essential for the protection of visual function. 
 \end{comment}
 
-Uma das formas de identificar a doença é por meio da fundoscopia ou exame de fundo de olho, no qual é possível observar alterações características, muitas vezes antes mesmo que a perda de visão se torne detectável~\cite{weinreb_2016}. Um exemplo de imagem obtida nesse exame é apresentado na Figura~\ref{fig:fundus}.
-\begin{comment}
+Uma das formas de identificar a presença de glaucoma é por meio da fundoscopia ou exame de fundo de olho, no qual é possível observar alterações características, muitas vezes antes mesmo que a perda de visão se torne detectável~\cite{weinreb_2004}. Um exemplo de imagem obtida nesse exame é apresentado na Figura~\ref{fig:fundus}.
 
+A principal característica observada ao analisar o fundo de olho é o tamanho da escavação em relação ao tamanho do disco ótico do paciente, ambos destacados na Figura~\ref{fig:disk}. O disco ótico é a região em que as células da retina se convergem para formar o nervo ótico. Essa convergência forma uma depressão ao centro do disco, chamada de escavação (em inglês conhecido como \emph{optic cup}). O anel neurorretiniano é a região que envolve a escavação. A razão entre o tamanho do disco e da escavação é conhecida como razão disco-copo (em inglês \emph{cup-to-disk ratio}) e seu valor acima do normal é um indicativo do dano causado pela doença ~\cite{weinreb_2004}. % posso também citar weinreb_2016 para essa última afirmação
+
+\begin{figure}[htb]
+ \centering
+ \includegraphics[width=0.3\textwidth]{images/TRAIN000004_cut.JPG}
+ \caption{Imagem de fundo de olho. Obtida do banco de dados JustRAIGS.}
+ \label{fig:fundus}
+\end{figure}
+
+\begin{comment}
 Dentre as características observadas estão: 1, 2, 3, 4 e 5. cite{"Five rules to evaluate the optic disc and retinal nerve fiber layer for glaucoma"}
 
 A capacidade da inteligência artificial em --- atrai seu uso na medicina. cite{alguem}
 
 uso de IA com imagens médicas aumentou\\
-
 
 
 fazer a avaliação manual gera divergência entre médicos, falta de padronização -> podemos fazer de forma automática
@@ -125,17 +133,7 @@ tem essa pesquisa aqui mas me parece muito restrita: só australia e nova zelanc
 \end{comment}
 
 
-Recentemente, diversas técnicas de aprendizagem profunda vem sendo aplicadas no diagnóstico de doenças com base em imagens de fundo de olho, inclusive para o glaucoma~\cite{li_review_2021}. Para possibilitar o desenvolvimento desses modelos, bancos de dados com imagens de fundo de olho classificadas por oftalmologistas foram criados e alguns deles disponibilizados publicamente.%% CSS: citar os bancos de dados aqui
-
-\begin{figure}[htb]
- \centering
- \includegraphics[width=0.3\textwidth]{images/TRAIN000004_cut.JPG}
- \caption{Imagem de fundo de olho. Obtida do banco de dados JustRAIGS.}
- \label{fig:fundus}
-\end{figure}
-
-% precisa se citação
-A principal característica observada ao analisar o fundo de olho é a relação entre o tamanho da escavação em relação ao disco ótico, a primeira localizada ao centro do segundo, ambos destacados na Figura~\ref{fig:disk}. A razão entre o .. valor acima do normal é um indicativo do dano causado pela doença. 
+Recentemente, diversas técnicas de aprendizagem profunda vem sendo aplicadas no diagnóstico de doenças com base em imagens de fundo de olho, inclusive para o glaucoma~\cite{li_review_2021}. Para possibilitar o desenvolvimento desses modelos, bancos de dados com imagens de fundo de olho classificadas por oftalmologistas foram criados e alguns deles disponibilizados publicamente, como o RIGA~\cite{riga}, ORIGA~\cite{origa}, RIM-ONE DL~\cite{RIMONEDL} e JustRAIGS~\cite{justraigs}. Um quadro resumo com alguns bandos de dados é apresentado na Tabela~\ref{tab:datasets}. 
 
 \begin{figure}[htb]
  \centering
@@ -144,14 +142,22 @@ A principal característica observada ao analisar o fundo de olho é a relação
  \label{fig:disk}
 \end{figure}
 
-% como encerrar?
+% LZT: CONTINUAR AQUI \/
 
-Trabalhos relacionados conseguiram realizar a classificação de imagens entre glaucoma e não glaucoma utilizando diferentes técnicas 
-
-O presente trabalho procura explorar...
-
+Trabalhos anteriores conseguiram realizar a classificação de imagens entre glaucoma e não glaucoma utilizando diferentes técnicas. Noronha et al. (2014) utilizou cumulantes de alta ordem para identificar glaucoma em 272 imagens de fundo de olho obtidas por conta própria, obtendo acuária de 84.72\% \cite{Noronha2014}. Chen et al. (2015) implementou uma rede neural convolucional, contendo seis camadas sendo quatro convolucionais e 2 totalmente conectadas, e a treinou em dois bancos de dados privados, obtendo de resultado os valores de área sobre curva (AUC) 0.831 e 0.887 \cite{chen2015glaucomadetection}. Um quadro resumo com estes e outros trabalhos é apresentado na Tabela~\ref{tab:trabalhos}.
 
 \begin{comment}
+Uma das áreas para melhorias segundo Li, et al. \cite{li_review_2021} é questão à interpretabilidade dos resultados fornecidos pelos modelos de classificação, devido à característa de black-box inerente à modelos de aprendizagem profunda.
+
+O banco de dados JustRAIGS, introduziu novas anotações incluindo uma lista de observações feitas pelos especialistas para justificar a presença de glaucoma nas imagens.
+\end{comment}
+
+O presente trabalho procura explorar o uso de redes neurais convolucionais no problema de classificação do glaucoma em imagens de fundo olho.
+
+O restante do texto é organizado da seguinte maneira: em primeiro lugar, apresentamos os objetivos deste trabalho na Seção~\ref{sec:objetivo} e, em seguida, apresentamos na Seção~\ref{sec:schedule} o plano de trabalho proposto.
+
+\begin{comment}
+DESCONSIDERAR ESSE BLOCO
 
 usando redes neurais\\
 e até mesmo técnicas de processamento de sinais\cite{Noronha2014}
@@ -166,12 +172,9 @@ suposições que precisam ser sustentadas:\\
 1- razão OD e OC é a melhor forma de identificar glaucoma\\
 2- CNN é melhor de que calcular a razão ente OD e OC: [Chen, 2015] afirma mas não sustenta. Cita [3]\\
 
-
 2) Diaz-Pinto, 2019: usando CNN não precisa fazer segmentação perfeita do OD e do OC
 "Important limitations of the methods that are based on handcrafted characteristics (CDR, Area Cup/Disc ratio (ACDR), vessel kinks and ISNT rule) is the significant disagreement in estimating them even between expert human graders. For that reason, new algorithms have been focused on automatic feature extraction such as the data-driven methods [3] and convolutional neural networks (CNNs)."\\
 Menciona alguns trabalhos que foram pela abordagem da segmentação e os resultados obtidos.
-
-
 
 investigar:
 Chen, 2015: 17 5 6 14, 2, 12, 13\\
@@ -179,16 +182,21 @@ Noronha, 2014: 9, 16, 17, 18
 
 \end{comment}
 
-
 \begin{table}[htb]
     \centering
     \begin{tabular}{|c|c|c|}
     \hline
     Nome & Nº de imagens & Ano de publicação \\
     \hline
-    REFUGE & 1200 & 2020 \\
+    ORIGA & 650 & 2010 \\
     \hline
     DRISHTI-GS1 & 101 & 2015 \\
+    \hline
+    RIGA & 750 & 2018 \\
+    \hline
+    RIM-ONE DL & 485 & 2020 \\
+    \hline
+    REFUGE & 1200 & 2020 \\
     \hline
     JustRAIGS & 101.442 & 2024 \\
     \hline
@@ -197,6 +205,7 @@ Noronha, 2014: 9, 16, 17, 18
     \label{tab:datasets}
 \end{table}
 
+% LZT: terminar tabela de trabalhos anteriores
 
 \begin{table}[htb]
     \centering
@@ -217,81 +226,33 @@ Noronha, 2014: 9, 16, 17, 18
     \label{tab:trabalhos}
 \end{table}
 
-
 \bigskip
-
-O restante do texto é organizado da seguinte maneira: em primeiro lugar, apresentamos os objetivos deste trabalho na Seção~\ref{sec:objetivo}. Em seguida, a Seção~\ref{sec:revisao} 
-
 
 \section{Objetivos}
 \label{sec:objetivo}
 
-segmentação da região de interesse
+O objetivo geral deste trabalho é criar um modelo para classificação de glaucoma em imagens de fundo de olho que seja interpretável.
 
-classificação 
-
-\section{Plano de trabalho}
-\label{sec:revisao}
-
-\subsection{Fundamentos de Aprendizado de Máquina}
-\label{sec:aprendizado}
-
-\subsection{Métricas de Classificação}
-\label{sec:metricas}
-
-
-\section{Materiais e Métodos} 
-\label{sec:metodos}
-
-
-Escrevendo em \emph{itálico} ou \textbf{negrito}.
-
-Uma lista de itens
+Os objetivos específicos são:
 \begin{itemize}
- \item Um
- \item Dois
+ \item segmentação da região de interesse
+ \item "comparar modelos quanto à interpretabilidade"
+ \item determinar metodologia para comparar interpretabilidade
 \end{itemize}
 
-Agora com numeração:
-\begin{enumerate}
-    \item Primeiro
-    \item Segundo
-\end{enumerate}
 
-Agora com sequência alfabética:
-\begin{enumerate}[label=(\alph*)]
-    \item Primeiro
-    \item Segundo
-\end{enumerate}
+\begin{comment}
+Resultados parciais
 
-Exemplo de expressão matemática em meio ao texto: $x \in [0, 1]$, outro exemplo: $f(x) = \frac{1}{1+e^{-x}}$.
+Para segmentar o disco ótico, a regiao de interesse a ser alimentada para o classificador, 
+\end{comment}
 
-Exemplo de equação numerada e como referenciar: veja a equação~(\ref{eq:somatoria}).
-\begin{equation}
-    \label{eq:somatoria}
-    p(x) = \sum_{x=1}^{10} \frac{1}{x^2}
-\end{equation}
+\bigskip
 
-Para incluir uma equação sem numeração, use o símbolo * (veja no arquivo .tex):
-\begin{equation*}
-    \label{eq:somatoria2}
-    p(x) = \sum_{x=1}^{10} \frac{1}{\exp({x})}
-\end{equation*}
+\section{Plano de trabalho}
+\label{sec:schedule}
 
-
-
-\subsection{Conjuntos de dados}
-\label{sec:dados}
-
-
-\subsection{Recursos computacionais}
-\label{sec:recursos}
-
-Bibliotecas de software, infra-estrutura
-
-
-\subsection{Resultados} 
-\label{sec:resultados}
+O plano de trabalho
 
 
 \begin{figure}[htb]
@@ -301,9 +262,9 @@ Bibliotecas de software, infra-estrutura
  \label{fig:crono}
 \end{figure}
 
+\bigskip
 
-A Figura~\ref{fig:crono} apresenta o cronograma proposto...
-
+%% LZT: Como fazer para não incluir a lista completa de nomes? [SBB+21] ficou muito grande
 \bibliographystyle{alpha}%{hapalike}
 \bibliography{ref.bib}
 
