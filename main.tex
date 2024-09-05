@@ -132,7 +132,6 @@ tem essa pesquisa aqui mas me parece muito restrita: só australia e nova zelanc
 ...médicos acreditam que IA vai melhorar o trabalho deles... \cite{scheetz_survey_2021}
 \end{comment}
 
-
 Recentemente, diversas técnicas de aprendizagem profunda vem sendo aplicadas no diagnóstico de doenças com base em imagens de fundo de olho, inclusive para o glaucoma~\cite{li_review_2021}. Para possibilitar o desenvolvimento desses modelos, bancos de dados com imagens de fundo de olho classificadas por oftalmologistas foram criados e alguns deles disponibilizados publicamente, como o RIGA~\cite{riga}, ORIGA~\cite{origa}, RIM-ONE DL~\cite{RIMONEDL} e JustRAIGS~\cite{justraigs}. Um quadro resumo com alguns bandos de dados é apresentado na Tabela~\ref{tab:datasets}. 
 
 \begin{figure}[htb]
@@ -142,16 +141,13 @@ Recentemente, diversas técnicas de aprendizagem profunda vem sendo aplicadas no
  \label{fig:disk}
 \end{figure}
 
-% LZT: adicionar mais trabalhos aqui
+Trabalhos anteriores conseguiram realizar a classificação de imagens entre glaucoma e não glaucoma utilizando diferentes técnicas. Noronha et al. (2014) utilizou cumulantes de alta ordem para identificar glaucoma em 272 imagens de fundo de olho obtidas por conta própria, obtendo acurácia de 84.72\% \cite{noronha2014hoc}. Chen et al. (2015) implementou uma rede neural convolucional, contendo seis camadas sendo quatro convolucionais e 2 totalmente conectadas, e a treinou em dois bancos de dados privados, obtendo de resultado os valores de área sobre curva (AUC) 0.831 e 0.887 \cite{chen2015cnn}. Liu et al. (2019) desenvolveu uma rede convolucional baseada na arquitetura ResNet e a treinou com 241.032 imagens, obtendo uma AUC de 0.996 \cite{liu_cnn_2019}. Um quadro resumo com estes e outros trabalhos é apresentado na Tabela~\ref{tab:trabalhos}.
 
-Trabalhos anteriores conseguiram realizar a classificação de imagens entre glaucoma e não glaucoma utilizando diferentes técnicas. Noronha et al. (2014) utilizou cumulantes de alta ordem para identificar glaucoma em 272 imagens de fundo de olho obtidas por conta própria, obtendo acurácia de 84.72\% \cite{Noronha2014}. Chen et al. (2015) implementou uma rede neural convolucional, contendo seis camadas sendo quatro convolucionais e 2 totalmente conectadas, e a treinou em dois bancos de dados privados, obtendo de resultado os valores de área sobre curva (AUC) 0.831 e 0.887 \cite{chen2015glaucomadetection}. Um quadro resumo com estes e outros trabalhos é apresentado na Tabela~\ref{tab:trabalhos}.
-
-% LZT: tentar explicar interpretabilidade e falar das features adicionais do JustRAIGS.
 \begin{comment}
 Uma das áreas para melhorias segundo Li, et al. \cite{li_review_2021} é questão à interpretabilidade dos resultados fornecidos pelos modelos de classificação, devido à característa de black-box inerente à modelos de aprendizagem profunda.
 \end{comment}
 
-O banco de dados JustRAIGS, além de incluir anotações entre a imagem ser referenciável para glaucoma ou não, também possui 10 anotações adicionais, para sinais observados pelos avaliadores, que justifiquem a escolha como referenciável para glaucoma, naquelas assim marcadas \cite{justraigs_article}.
+O banco de dados JustRAIGS, além de incluir anotações entre a imagem ser referenciável para glaucoma ou não, também possui 10 anotações adicionais, para sinais observados pelos avaliadores, que justifiquem a escolha da imagem como referenciável para glaucoma, naquelas assim marcadas \cite{justraigs_article}.
 
 O presente trabalho procura explorar o uso de redes neurais convolucionais no problema de classificação do glaucoma em imagens de fundo olho, além de investigar o uso das anotações adicionais presentes no JustRAIGS como forma de auxiliar na interpretabilidade dos resultados produzidos pelos modelos.
 
@@ -207,20 +203,24 @@ Noronha, 2014: 9, 16, 17, 18
 \end{table}
 
 % LZT: terminar tabela de trabalhos anteriores
-
+% LZT: ajustar formato tabela
 \begin{table}[htb]
     \centering
     \begin{tabular}{|l|l|l|l|c|c|}
     \hline
-    Autores          & Método          & Imagens & Banco        & ACC     & AUC   \\
+    Artigo                                      & Método      & Banco de dados                 & ACC   & AUC   \\
     \hline
-    Chen, 2015       & CNN própria     &         & ORIGA        & -       & 0.831 \\
+    Noronha et al. (2014) \cite{noronha2014hoc} & Cumulantes  & (privado) 272 imagens          & 0.847 &  -    \\
     \hline
-    Chen, 2015       & CNN própria     &         & ORIGA + SCES & -       & 0.887 \\
+    Chen et al. (2015) \cite{chen2015cnn}       & CNN própria & ORIGA                          & -     & 0.831 \\
     \hline
-    Noronha, 2014    & Cumulantes      & 272     &              & 0.847  &  -     \\
+    Chen et al. (2015) \cite{chen2015cnn}       & CNN própria & ORIGA + SCES                   & -     & 0.887 \\
     \hline
-    Diaz-Pinto, 2019 & Xception        &         & -            &        &        \\
+    Ferreira et al. (2018) \cite{ferreira_cnn_2018} & U-Net   & RIM-ONE, DRISHTI-GS, DRIONS-DB & 1     & 1     \\  
+    \hline
+    Liu et al. (2019) \cite{liu_cnn_2019}       & ResNet           & (privado) 241.032 imagens & 0.996 & -     \\
+    \hline
+    Nawaz et al. (2022) \cite{nawaz_efficient_2022} & EfficientNet-B0 & ORIGA                  & 0.972 & 0.979 \\
     \hline
     \end{tabular}
     \caption{Trabalhos anteriores e resultados obtidos}
@@ -231,6 +231,14 @@ Noronha, 2014: 9, 16, 17, 18
 
 \section{Objetivos}
 \label{sec:objetivo}
+
+\begin{comment}
+Objetivos: (devem ser mensuráveis, chegar no final do trabalho e dizer que atingiu)
+  criar modelo que seja interpretável
+secundário:
+ - "comparar modelos quanto à interpretabilidade"
+ - determinar metodologia para comparar interpretabilidade
+\end{comment}
 
 O objetivo geral deste trabalho é criar um modelo para classificação de glaucoma em imagens de fundo de olho que seja interpretável.
 
@@ -252,6 +260,23 @@ Para segmentar o disco ótico, a regiao de interesse a ser alimentada para o cla
 
 \section{Plano de trabalho}
 \label{sec:schedule}
+
+\begin{comment}
+Plano de trabalho:
+ - terminar o proximo quadrimestre com um prototip
+   arquitetura definida
+   treinado
+   avaliadado
+ - refinar segmentador
+   determinar se ele é bom o bastante
+ - determinar os conjuntos de dados que serão usados
+   mais algum para testar transferencia
+ - desenvolver um protocolo de trainamento e avaliação
+ - definir a arquitetura de rede
+ - treinar a rede
+ - conduzir revisao sobre fundamentos: ML, arq de redes usadas para esse prob, interpretabilidade
+ - reservar tempo para relatório
+\end{comment}
 
 O plano de trabalho
 
