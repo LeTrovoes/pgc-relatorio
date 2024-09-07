@@ -11,6 +11,7 @@
 \usepackage{amsmath}
 \usepackage{csvsimple} 
 \usepackage{geometry}
+
 \geometry{
     a4paper,
     left=3cm,
@@ -30,6 +31,12 @@
 \usepackage{subcaption}
 \DeclareUnicodeCharacter{0301}{*************************************}
 \usepackage{enumitem}
+%% CSS: mudando o gerenciador de bibliografia para biblatex para contornar
+% alguns problemas. Adendo: a compilação no overleaf ficou muito instável
+% e por alguma razão não imprime a seção de bibliografia no final, apesar
+% de colocar as anotações ao longo do texto. Voltando ao bibtex no momento (5/9/2024)
+%\usepackage{biblatex}
+%\addbibresource{ref.bib}
 
 \title{TÍTULO}
 \author{autor}
@@ -69,7 +76,9 @@
 \end{center}
 
 \begin{quote}
-[Contexto, visão geral do método, etc]
+O glaucoma é a principal causa de cegueira irreversível no mundo, podendo atingir até 111,8 milhões de pessoas até 2040. Caracterizada pelo dano progressivo ao nervo ótico, a doença não tem cura e é assintomática em seus estágios iniciais, tornando o diagnóstico precoce essencial para retardar ou prevenir sua progressão. O exame de fundoscopia é uma das principais formas de identificar a doença, no qual é possível observar alterações características do glaucoma. Recentemente, técnicas de aprendizagem profunda têm sido aplicadas no diagnóstico de glaucoma em imagens de fundo de olho. O emprego de diferentes arquiteturas de redes neurais convolucionais tem apresentado resultados significativos. Contudo, a limitação da disponibilidade de imagens para treinamento e a falta de interpretabilidade são frequentemente apontadas como limitações.
+
+Esse trabalho propõe o desenvolvimento de uma rede neural convolucional para a identificação de glaucoma em imagens de fundo de olho, focando na interpretabilidade dos resultados. Utilizaremos o banco de dados JustRAIGS, que inclui anotações adicionais que justificam a classificação atribuída as imagens pelos avaliadores.
 \end{quote}
 
 \begin{center}
@@ -81,11 +90,6 @@ Santo André, setembro de 2024
 
 \section{Introdução}
 \label{sec:introducao}
-
-\begin{comment}
-doença sem cura, caracterizada pelo aumento de pressão intra-ocular que causa dados ao nervo ótico.
-buscar fonte, WHO Nao explica direito
-\end{comment}
 
 %% CSS: usar o ~ antes do \cite impede que o latex quebre linha entre 
 %       o texto e a anotação
@@ -206,19 +210,20 @@ Noronha, 2014: 9, 16, 17, 18
 % LZT: ajustar formato tabela
 \begin{table}[htb]
     \centering
-    \begin{tabular}{|l|l|l|l|c|c|}
+    % o formato p (de parágrafo) permite ajustar largura e causa quebra de linha
+    \begin{tabular}{|l|l|p{3cm}|c|c|}
     \hline
     Artigo                                      & Método      & Banco de dados                 & ACC   & AUC   \\
     \hline
-    Noronha et al. (2014) \cite{noronha2014hoc} & Cumulantes  & (privado) 272 imagens          & 0.847 &  -    \\
+    Noronha et al. (2014) \cite{noronha2014hoc} & Cumulantes  & Privado com 272 imagens          & 0.847 &  -    \\
     \hline
     Chen et al. (2015) \cite{chen2015cnn}       & CNN própria & ORIGA                          & -     & 0.831 \\
     \hline
-    Chen et al. (2015) \cite{chen2015cnn}       & CNN própria & ORIGA + SCES                   & -     & 0.887 \\
+    Chen et al. (2015) \cite{chen2015cnn}       & CNN própria & ORIGA, SCES                    & -     & 0.887 \\
     \hline
     Ferreira et al. (2018) \cite{ferreira_cnn_2018} & U-Net   & RIM-ONE, DRISHTI-GS, DRIONS-DB & 1     & 1     \\  
     \hline
-    Liu et al. (2019) \cite{liu_cnn_2019}       & ResNet           & (privado) 241.032 imagens & 0.996 & -     \\
+    Liu et al. (2019) \cite{liu_cnn_2019}       & ResNet      & Privado com 241.032 imagens & 0.996 & -     \\
     \hline
     Nawaz et al. (2022) \cite{nawaz_efficient_2022} & EfficientNet-B0 & ORIGA                  & 0.972 & 0.979 \\
     \hline
@@ -240,20 +245,21 @@ secundário:
  - determinar metodologia para comparar interpretabilidade
 \end{comment}
 
-O objetivo geral deste trabalho é criar um modelo para classificação de glaucoma em imagens de fundo de olho que seja interpretável.
+O objetivo geral deste trabalho é realizar a identificação de glaucoma em imagens de fundo de olho, utilizando um modelo de aprendizagem profunda, que seja interpretável.
 
 Os objetivos específicos são:
 \begin{itemize}
- \item segmentação da região de interesse
- \item "comparar modelos quanto à interpretabilidade"
- \item determinar metodologia para comparar interpretabilidade
+ \item realizar a segmentação do disco ótico, a região de interesse (ROI)
+ % revisão da literatura sobre diferentes arquiteturas para organizar
 \end{itemize}
 
 
 \begin{comment}
 Resultados parciais
 
-Para segmentar o disco ótico, a regiao de interesse a ser alimentada para o classificador, 
+O disco ótico e seu entorno representam uma pequena porção da imagem de fundo de olho. Como tentativa de melhorar a performance do classificador a ser desenvolvido, vamos inicialmente segmentar o disco ótico e recortar a imagem em seu entorno, antes de envia-la ao classificador. 
+
+
 \end{comment}
 
 \bigskip
@@ -278,7 +284,18 @@ Plano de trabalho:
  - reservar tempo para relatório
 \end{comment}
 
-O plano de trabalho
+O plano de trabalho proposto sugerido, para a segunda de três etapas, contém as seguintes etapas:
+\begin{itemize}
+    \item Refinar segmentador
+    \item Avaliar segmentador
+    \item Determinar conjunto de dados
+    \item Definir arquitetura do classificador
+    \item Definir protocolo de treinamento e avaliação
+    \item Implementar classificador
+    \item Treinar classificador
+    \item Revisão de fundamentos
+    \item Escrita do relatório
+\end{itemize}
 
 
 \begin{figure}[htb]
@@ -291,7 +308,11 @@ O plano de trabalho
 \bigskip
 
 %% LZT: Como fazer para não incluir a lista completa de nomes? [SBB+21] ficou muito grande
+%% CSS: Parte da mudança para biblatex; suspendendo por enquanto,
+% ver comentário no preâmbulo (5/9/2024)
+% \printbibliography
 \bibliographystyle{alpha}%{hapalike}
 \bibliography{ref.bib}
+
 
 \end{document}
