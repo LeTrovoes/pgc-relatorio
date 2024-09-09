@@ -31,8 +31,8 @@
 \usepackage{subcaption}
 \DeclareUnicodeCharacter{0301}{*************************************}
 \usepackage{enumitem}
-%% CSS: mudando o gerenciador de bibliografia para biblatex para contornar
-% alguns problemas. Adendo: a compilação no overleaf ficou muito instável
+%% CSS: mudando o gerenciador de bibliografia para biblatex para contornar 
+% alguns problemas. Adendo: a compilação no overleaf ficou muito instável 
 % e por alguma razão não imprime a seção de bibliografia no final, apesar
 % de colocar as anotações ao longo do texto. Voltando ao bibtex no momento (5/9/2024)
 %\usepackage{biblatex}
@@ -257,7 +257,7 @@ Os objetivos específicos são:
 \begin{comment}
 Resultados parciais
 
-O disco ótico e seu entorno representam uma pequena porção da imagem de fundo de olho. Como tentativa de melhorar a performance do classificador a ser desenvolvido, vamos inicialmente segmentar o disco ótico e recortar a imagem em seu entorno, antes de envia-la ao classificador. 
+O disco ótico e seu entorno representam uma pequena porção da imagem de fundo de olho, porém as principais alterações observadas pelos oftalmologistas se encontram nessa área (missing citation). Como tentativa de (melhorar a performance | "facilitar a vida") do classificador a ser desenvolvido, vamos inicialmente segmentar o disco ótico e recortar a imagem em seu entorno, antes de envia-la ao classificador. 
 
 
 \end{comment}
@@ -267,40 +267,24 @@ O disco ótico e seu entorno representam uma pequena porção da imagem de fundo
 \section{Plano de trabalho}
 \label{sec:schedule}
 
-\begin{comment}
-Plano de trabalho:
- - terminar o proximo quadrimestre com um prototip
-   arquitetura definida
-   treinado
-   avaliadado
- - refinar segmentador
-   determinar se ele é bom o bastante
- - determinar os conjuntos de dados que serão usados
-   mais algum para testar transferencia
- - desenvolver um protocolo de trainamento e avaliação
- - definir a arquitetura de rede
- - treinar a rede
- - conduzir revisao sobre fundamentos: ML, arq de redes usadas para esse prob, interpretabilidade
- - reservar tempo para relatório
-\end{comment}
-
-O plano de trabalho proposto sugerido, para a segunda de três etapas, contém as seguintes etapas:
+O plano de trabalho proposto, para o segundo de três períodos, contém as seguintes etapas:
 \begin{itemize}
-    \item Refinar segmentador
-    \item Avaliar segmentador
-    \item Determinar conjunto de dados
-    \item Definir arquitetura do classificador
-    \item Definir protocolo de treinamento e avaliação
-    \item Implementar classificador
-    \item Treinar classificador
-    \item Revisão de fundamentos
-    \item Escrita do relatório
+    \item \textbf{Refinar segmentador:} continuar o treinamento do segmentador do disco ótico, nossa região de interesse (ROI)
+    \item \textbf{Avaliar segmentador:} comparar performance do segmentador com outros disponíveis publicamente
+    \item \textbf{Determinar conjunto de dados:} analisar distribuição de classes do JustRAIGS e avaliar possível uso de outros bancos de dados
+    \item \textbf{Definir arquitetura do classificador:} estudar e avaliar as arquiteturas existentes para o classificador, com foco na interpretabilidade
+    \item \textbf{Definir protocolo de treinamento e avaliação}: definir a forma que será feito o treinamento, função de perda e métricas de avaliação
+    \item \textbf{Implementar classificador}
+    \item \textbf{Treinar classificador}
+    \item \textbf{Revisão de fundamentos:} estudo e revisão de fundamentos teóricos
+    \item \textbf{Escrita do relatório}
 \end{itemize}
 
+A figura~\ref{fig:crono} apresenta o cronograma proposto com as etapas definidas acima.
 
 \begin{figure}[htb]
  \centering
- \includegraphics[width=1.0\textwidth]{images/crono2022}
+ \includegraphics[width=1.0\textwidth]{images/crono_q2.png}
  \caption{Cronograma de execução da proposta}
  \label{fig:crono}
 \end{figure}
