@@ -147,11 +147,9 @@ Recentemente, diversas técnicas de aprendizagem profunda vem sendo aplicadas no
 
 Trabalhos anteriores conseguiram realizar a classificação de imagens entre glaucoma e não glaucoma utilizando diferentes técnicas. Noronha et al. (2014) utilizou cumulantes de alta ordem para identificar glaucoma em 272 imagens de fundo de olho obtidas por conta própria, obtendo acurácia de 84.72\% \cite{noronha2014hoc}. Chen et al. (2015) implementou uma rede neural convolucional, contendo seis camadas sendo quatro convolucionais e 2 totalmente conectadas, e a treinou em dois bancos de dados privados, obtendo de resultado os valores de área sobre curva (AUC) 0.831 e 0.887 \cite{chen2015cnn}. Liu et al. (2019) desenvolveu uma rede convolucional baseada na arquitetura ResNet e a treinou com 241.032 imagens, obtendo uma AUC de 0.996 \cite{liu_cnn_2019}. Um quadro resumo com estes e outros trabalhos é apresentado na Tabela~\ref{tab:trabalhos}.
 
-\begin{comment}
-Uma das áreas para melhorias segundo Li, et al. \cite{li_review_2021} é questão à interpretabilidade dos resultados fornecidos pelos modelos de classificação, devido à característa de black-box inerente à modelos de aprendizagem profunda.
-\end{comment}
+Em seu estudo de revisão, a respeito do uso de aprendizagem profunda em imagens de fundo de olho, Li et al. \cite{li_review_2021} aponta como algumas das limitações e áreas para melhorias futuras a baixa disponibilidade de dados anotados com qualidade e a falta de interpretabilidade dos resultados, característica inerente à aprendizagem profunda.
 
-O banco de dados JustRAIGS, além de incluir anotações entre a imagem ser referenciável para glaucoma ou não, também possui 10 anotações adicionais, para sinais observados pelos avaliadores, que justifiquem a escolha da imagem como referenciável para glaucoma, naquelas assim marcadas \cite{justraigs_article}.
+O banco de dados JustRAIGS, além de incluir anotações entre referenciável para glaucoma ou não para 101.422 imagens, também possui 10 anotações adicionais, para sinais observados pelos avaliadores, que justifiquem a escolha da imagem como referenciável para glaucoma, naquelas assim marcadas \cite{justraigs_article}.
 
 O presente trabalho procura explorar o uso de redes neurais convolucionais no problema de classificação do glaucoma em imagens de fundo olho, além de investigar o uso das anotações adicionais presentes no JustRAIGS como forma de auxiliar na interpretabilidade dos resultados produzidos pelos modelos.
 
@@ -206,8 +204,6 @@ Noronha, 2014: 9, 16, 17, 18
     \label{tab:datasets}
 \end{table}
 
-% LZT: terminar tabela de trabalhos anteriores
-% LZT: ajustar formato tabela
 \begin{table}[htb]
     \centering
     % o formato p (de parágrafo) permite ajustar largura e causa quebra de linha
@@ -215,15 +211,15 @@ Noronha, 2014: 9, 16, 17, 18
     \hline
     Artigo                                      & Método      & Banco de dados                 & ACC   & AUC   \\
     \hline
-    Noronha et al. (2014) \cite{noronha2014hoc} & Cumulantes  & Privado com 272 imagens          & 0.847 &  -    \\
+    Noronha et al. (2014) \cite{noronha2014hoc} & Cumulantes  & Privado com 272 imagens        & 0.847 &  -    \\
     \hline
     Chen et al. (2015) \cite{chen2015cnn}       & CNN própria & ORIGA                          & -     & 0.831 \\
     \hline
     Chen et al. (2015) \cite{chen2015cnn}       & CNN própria & ORIGA, SCES                    & -     & 0.887 \\
     \hline
-    Ferreira et al. (2018) \cite{ferreira_cnn_2018} & U-Net   & RIM-ONE, DRISHTI-GS, DRIONS-DB & 1     & 1     \\  
+    Ferreira et al. (2018) \cite{ferreira_cnn_2018} & U-Net   & RIM-ONE, DRISHTI-GS, DRIONS-DB & 1     & 1     \\
     \hline
-    Liu et al. (2019) \cite{liu_cnn_2019}       & ResNet      & Privado com 241.032 imagens & 0.996 & -     \\
+    Liu et al. (2019) \cite{liu_cnn_2019}       & ResNet      & Privado com 241.032 imagens    & 0.996 & -     \\
     \hline
     Nawaz et al. (2022) \cite{nawaz_efficient_2022} & EfficientNet-B0 & ORIGA                  & 0.972 & 0.979 \\
     \hline
@@ -250,7 +246,7 @@ O objetivo geral deste trabalho é realizar a identificação de glaucoma em ima
 Os objetivos específicos são:
 \begin{itemize}
  \item realizar a segmentação do disco ótico, a região de interesse (ROI)
- % revisão da literatura sobre diferentes arquiteturas para organizar
+ % revisão da literatura sobre diferentes arquiteturas de forma a organizar conhecimento
 \end{itemize}
 
 
@@ -269,8 +265,8 @@ O disco ótico e seu entorno representam uma pequena porção da imagem de fundo
 
 O plano de trabalho proposto, para o segundo de três períodos, contém as seguintes etapas:
 \begin{itemize}
-    \item \textbf{Refinar segmentador:} continuar o treinamento do segmentador do disco ótico, nossa região de interesse (ROI)
-    \item \textbf{Avaliar segmentador:} comparar performance do segmentador com outros disponíveis publicamente
+    \item \textbf{Refinar segmentador:} continuar o treinamento do segmentador do disco ótico, a região de interesse (ROI)
+    \item \textbf{Avaliar segmentador:} comparar a performance do segmentador com outros disponíveis publicamente
     \item \textbf{Determinar conjunto de dados:} analisar distribuição de classes do JustRAIGS e avaliar possível uso de outros bancos de dados
     \item \textbf{Definir arquitetura do classificador:} estudar e avaliar as arquiteturas existentes para o classificador, com foco na interpretabilidade
     \item \textbf{Definir protocolo de treinamento e avaliação}: definir a forma que será feito o treinamento, função de perda e métricas de avaliação
