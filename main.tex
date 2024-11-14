@@ -287,6 +287,48 @@ A figura~\ref{fig:crono} apresenta o cronograma proposto com as etapas definidas
 
 \bigskip
 
+\section{Materiais e Métodos}
+\label{sec:methodology}
+
+\subsection{Conjunto de dados}
+\label{sec:dataset}
+
+Foi escolhido o conjunto de dados JustRAIGS \cite{justraigs} que contém 101.442 imagens de fundo de olho publicamente disponíveis, derivado do conjunto de dados REGAIS – \emph{Rotterdam EyePACS Glaucoma AI Screening} \cite{justraigs_article}. As imagens foram providas pelo EyePACS LLC em Santa Cruz, Califórnia nos EUA enquanto as anotações foram providas pelo Instituto de Oftalmologia de Roterdã (\emph{Rotterdam Ophthalmic Institute}) do \emph{Rotterdam Eye Hospital} em Roterdã nos Países Baixos.
+
+\subsubsection{Análise}
+\label{sec:dataset:analysis}
+Das 101.442 imagens que o conjunto de dados alega possuir, 19 não foram encontradas, restando 101.423. O conjunto é bastante desbalanceado: dentre todas as imagens, apenas 3.270 receberam anotação final para glaucoma, o que representa aproximadamente 3,22\% ou 1 em cada 31.
+
+falar de G1, G2 e G3
+resolução de conflito
+incluir: As análises que seguem são baseadas no resultado obtido por meio deste algoritmo.
+
+Das anotações adicionais, presentes apenas nos casos com anotação final para glaucoma, X é a mais frequente, aparecendo em XX\% das referenciáveis para glaucoma (ou YY\% do total), Y por sua vez é a menos frequente, aparecendo em apenas YY\% (YY\%). É possível observar certas correções entre as anotações adicionais, apresentadas na Figura Z por meio de uma matriz de correlação.
+
+[fig matriz correlação]
+
+\subsubsection{Divisão entre treino e teste}
+\label{sec:dataset:split}
+
+\subsection{Segmentação}
+\label{sec:segmentation}
+
+YOLO
+
+\subsection{Classificação}
+\label{sec:classification}
+
+ResNet50
+
+\subsection{Recursos computacionais}
+\label{sec:resources}
+
+Todos os modelos foram implementados em Python com Keras utilizando o TensorFlow v2.18.0 de backend, com exceção do YOLO (Ultralytics) que utiliza o PyTorch. As versões dos pacotes eram: Python 3.10.12, Keras 3.6.0, TensorFlow 2.18.0, Ultralytics 8.3.18.
+Os códigos foram executados com o sistema operacional Pop!\_OS 22.04, kernel Linux 6.9.3, tendo instalado o driver da NVIDIA 560.35.03 e as bibliotecas NVIDIA CUDA 12.6 e NVIDIA cuDNN 9.5.1.
+O computador estava equipado com um processador Intel i7-10700K, 32 GB de RAM e uma GPU NVIDIA GeForce RTX 3070.
+
+\bigskip
+
 %% LZT: Como fazer para não incluir a lista completa de nomes? [SBB+21] ficou muito grande
 %% CSS: Parte da mudança para biblatex; suspendendo por enquanto,
 % ver comentário no preâmbulo (5/9/2024)
