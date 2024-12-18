@@ -1,5 +1,5 @@
 \documentclass[12pt]{article}
-\usepackage[T1]{fontenc}
+\usepackage[T1]{fontenc} 
 \usepackage[portuguese]{babel}
 \usepackage{hyphenat}
 % use se você precisar forçar a separação de sílabas em quebra de linha
@@ -9,7 +9,7 @@
 \usepackage{csquotes}
 \usepackage{subfiles}
 \usepackage{amsmath}
-\usepackage{csvsimple}
+\usepackage{csvsimple} 
 \usepackage{geometry}
 
 \geometry{
@@ -25,19 +25,21 @@
 
 \usepackage[dvipsnames]{xcolor}
 \definecolor{alert}{RGB}{201, 58, 128}
-\setlength {\marginparwidth }{2cm}
+\setlength {\marginparwidth }{2cm} 
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{comment}
 \usepackage{subcaption}
 \DeclareUnicodeCharacter{0301}{*************************************}
 \usepackage{enumitem}
-%% CSS: mudando o gerenciador de bibliografia para biblatex para contornar
-% alguns problemas. Adendo: a compilação no overleaf ficou muito instável
+%% CSS: mudando o gerenciador de bibliografia para biblatex para contornar 
+% alguns problemas. Adendo: a compilação no overleaf ficou muito instável 
 % e por alguma razão não imprime a seção de bibliografia no final, apesar
 % de colocar as anotações ao longo do texto. Voltando ao bibtex no momento (5/9/2024)
 %\usepackage{biblatex}
 %\addbibresource{ref.bib}
 
+%% TODO:
+% - Resolver a questão com biblatex no overleaf
 \title{TÍTULO}
 \author{autor}
 
@@ -53,19 +55,19 @@
 {\bf \LARGE  CLASSIFICAÇÃO DE GLAUCOMA EM IMAGENS DE FUNDO DE OLHO COM APRENDIZAGEM PROFUNDA}
 
 \bigskip
-
+        
         Leandro Zangirolami Trovões (Orientando)\\
         Carlos da Silva dos Santos (Orientador)\\
         Universidade Federal do ABC\\[5,5cm]
     \end{flushright}
 
     \vfill
-
+    
     \begin{center}
         Santo André,\\
         Dezembro de 2024
     \end{center}
-
+    
     \newpage
 \bigskip
 
@@ -90,7 +92,7 @@ Santo André, dezembro de 2024
 \section{Introdução}
 \label{sec:introducao}
 
-%% CSS: usar o ~ antes do \cite impede que o latex quebre linha entre
+%% CSS: usar o ~ antes do \cite impede que o latex quebre linha entre 
 % o texto e a anotação
 % LZT: queremos evitar a quebra? Vi um caso em que a anotação chegou a
 % passar da margem do documento para evitar a quebra.
@@ -99,14 +101,14 @@ Principal causa de cegueira irreversível no mundo \cite{steinmetz_causes_2021},
 O estágio inicial do glaucoma é assintomático, mas a doença causa perda progressiva da visão periférica conforme avança e pode levar à perda total da visão. O tratamento pode retardar ou prevenir a progressão, mas depende de um diagnóstico precoce, geralmente antes mesmo dos primeiros sintomas~\cite{who_2019}.
 
 \begin{comment}
-O tratamento consiste em reduzir a pressão intra-ocular e
+O tratamento consiste em reduzir a pressão intra-ocular e 
 
 fatores de risco: idade, histórico familiar
 
 OMS: General population screening for glaucoma is not currently
 considered to be cost-effective in most settings (63). Therefore,
 routine eye examinations are recommended for high-risk individuals
-as early detection is essential for the protection of visual function.
+as early detection is essential for the protection of visual function. 
 \end{comment}
 
 %% CSS: Use \emph quando apresentar um termo novo no texto
@@ -138,7 +140,7 @@ tem essa pesquisa aqui mas me parece muito restrita: só australia e nova zelanc
 ...médicos acreditam que IA vai melhorar o trabalho deles... \cite{scheetz_survey_2021}
 \end{comment}
 
-Recentemente, diversas técnicas de aprendizagem profunda vem sendo aplicadas no diagnóstico de doenças com base em imagens de fundo de olho, inclusive para o glaucoma~\cite{li_review_2021}. Para possibilitar o desenvolvimento desses modelos, bancos de dados com imagens de fundo de olho classificadas por oftalmologistas foram criados e alguns deles disponibilizados publicamente, como o RIGA~\cite{riga}, ORIGA~\cite{origa}, RIM-ONE DL~\cite{RIMONEDL} e JustRAIGS~\cite{justraigs}. Um quadro resumo com alguns bandos de dados é apresentado na Tabela~\ref{tab:datasets}.
+Recentemente, diversas técnicas de aprendizagem profunda vem sendo aplicadas no diagnóstico de doenças com base em imagens de fundo de olho, inclusive para o glaucoma~\cite{li_review_2021}. Para possibilitar o desenvolvimento desses modelos, bancos de dados com imagens de fundo de olho classificadas por oftalmologistas foram criados e alguns deles disponibilizados publicamente, como o RIGA~\cite{riga}, ORIGA~\cite{origa}, RIM-ONE DL~\cite{RIMONEDL} e JustRAIGS~\cite{justraigs}. Um quadro resumo com alguns conjuntos de dados é apresentado na Tabela~\ref{tab:datasets}. 
 
 \begin{figure}[htb]
  \centering
@@ -151,11 +153,12 @@ Trabalhos anteriores conseguiram realizar a classificação de imagens entre gla
 
 Em seu estudo de revisão, a respeito do uso de aprendizagem profunda em imagens de fundo de olho, Li et al.~\cite{li_review_2021} aponta como algumas das limitações e áreas para melhorias futuras a baixa disponibilidade de dados anotados com qualidade e a falta de interpretabilidade dos resultados, característica inerente à aprendizagem profunda.
 
+%% CSS: citar alguns exemplos de anotações extra do justRaigs, para exemplificar
 O banco de dados JustRAIGS, além de incluir anotações entre referenciável para glaucoma ou não para 101.422 imagens, também possui 10 anotações adicionais, para sinais observados pelos avaliadores, que justifiquem a escolha da imagem como referenciável para glaucoma, naquelas assim marcadas~\cite{justraigs_article}.
 
 O presente trabalho procura explorar o uso de redes neurais convolucionais no problema de classificação do glaucoma em imagens de fundo olho, além de investigar o uso das anotações adicionais presentes no JustRAIGS como forma de auxiliar na interpretabilidade dos resultados produzidos pelos modelos.
 
-O restante do texto é organizado da seguinte maneira: em primeiro lugar, apresentamos os objetivos deste trabalho na Seção~\ref{sec:objetivo}, e em seguida apresentamos o plano de trabalho proposto na Seção~\ref{sec:schedule}. A Seção~\ref{sec:methodology} explora o conjunto de dados escolhido, descreve o desenvolvimento e resultados do segmentador do disco ótico e descreve o treinamento do classificador preliminar. Seguindo na Seção~\ref{sec:results} apresentamos os resultados por ele obtidos e, por fim, as conclusões na Seção~\ref{sec:conclusions}.
+O restante do texto é organizado da seguinte maneira: em primeiro lugar, apresentamos os objetivos deste trabalho na Seção~\ref{sec:objetivo}. A Seção~\ref{sec:methodology} explora o conjunto de dados escolhido, descreve o desenvolvimento e resultados do segmentador do disco ótico e descreve o treinamento do classificador preliminar. Seguindo na Seção~\ref{sec:results}, apresentamos os resultados por ele obtidos. Por fim, as conclusões são apresentadas na Seção~\ref{sec:conclusions}, junto com o plano de trabalho proposto para a próxima etapa do trabalho (Seção~\ref{sec:schedule}).
 
 \begin{comment}
 DESCONSIDERAR ESSE BLOCO
@@ -253,28 +256,6 @@ Os objetivos específicos são:
 
 \bigskip
 
-% LZT: devemos mover o plano de trabalho para o final? Ele menciona refinir
-% o classificador que ainda nem foi apresentado
-\section{Plano de trabalho}
-\label{sec:schedule}
-
-O plano de trabalho proposto, para o último de três períodos, contém as seguintes etapas:
-\begin{itemize}
-    \item \textbf{Refinar classificador:} continuar o treinamento do classificador, explorando outras técnicas de aumentação de dados, normalização dos dados de entrada e melhor aproveitamento do conjunto de dados
-    \item \textbf{Avaliar e comparar classificador:} comparar a performance do classificador com outras publicações
-    \item \textbf{Implementar classificador orientado a protótipos:} fazer adaptação de outros trabalhos que utilizam a ideia de protótipos para explorar a interpretabilidade
-    \item \textbf{Revisão de fundamentos:} estudo e revisão de fundamentos teóricos
-    \item \textbf{Escrita do relatório}
-\end{itemize}
-
-A figura~\ref{fig:crono} apresenta o cronograma proposto com as etapas definidas acima.
-
-\begin{figure}[htb]
- \centering
- \includegraphics[width=1.0\textwidth]{images/crono_q3.png}
- \caption{Cronograma de execução da proposta}
- \label{fig:crono}
-\end{figure}
 
 \bigskip
 
@@ -291,9 +272,9 @@ Foi escolhido o conjunto de dados JustRAIGS~\cite{justraigs} que contém 101.442
 
 %% CSS: repita a referência para o artigo, como mudou de parágrafo, pode gerar dúvida
 %% LZT: apenas no final, ou entre cada frase? coloquei no final
-Cada imagem foi anotada por dois avaliadores (A1 e A2), selecionados aleatoriamente dentre um conjunto de avaliadores qualificados.
+Cada imagem foi anotada por dois avaliadores (A1 e A2), selecionados aleatoriamente dentre um conjunto de avaliadores qualificados. 
 Para cada imagem, o avaliador deveria escolher uma classificação principal entre referenciável para glaucoma (referable glaucoma - RG), não referenciável (no referable glaucoma - NRG) ou ainda se não era possível avaliar a imagem (ungradable - U). Referenciável para glaucoma deveria ser escolhido se fossem esperadas perdas no campo de visão para o olho avaliado.
-Caso os dois avaliadores concordassem na classificação principal, essa classificação era dada como final, caso contrário, um terceiro avaliador (A3), especialista em glaucoma, anotava a imagem e essa anotação era dada como final. \cite{justraigs_article}
+Caso os dois avaliadores concordassem na classificação principal, essa classificação era dada como final, caso contrário, um terceiro avaliador (A3), especialista em glaucoma, anotava a imagem e essa anotação era dada como final.~\cite{justraigs_article}
 
 Para os casos em que o avaliador julgasse como referenciável para glaucoma, ele poderia selecionar até 10 anotação adicionais, que representam características aparentes de um olho com glaucoma, de forma a justificar sua escolha. \cite{justraigs_article}
 
@@ -311,7 +292,7 @@ As anotações adicionais são:
     \item \textbf{LC}: Escavação aumentada (\emph{Large cup})
 \end{itemize}
 
-Discordâncias nessas anotações adicionais, contudo, não foram resolvidas. Isto significa que há casos em que, apesar de A1 e A2 terem concordado na classificação principal como glaucoma, eles podem ter selecionado anotações adicionais diferentes para justificar sua escolha e, nesses casos, A3 não foi requisitado. Sendo assim, o conjuntos de dados inclui a anotação principal final e as anotações principal e adicionais de cada avaliador. Imagens cuja classificação final foi U não foram incluídas no JustRAIGS.
+Discordâncias nessas anotações adicionais, contudo, não foram resolvidas. Isto significa que há casos em que, apesar de A1 e A2 terem concordado na classificação principal como glaucoma, eles podem ter selecionado anotações adicionais diferentes para justificar sua escolha e, nesses casos, A3 não foi requisitado. Sendo assim, o conjunto de dados inclui a anotação principal final e as anotações principal e adicionais de cada avaliador. Imagens cuja classificação final foi U não foram incluídas no JustRAIGS.
 
 Para obter um valor final às anotações adicionais, no escopo deste trabalho, adotamos a seguinte regra para a resolução:
 
@@ -374,7 +355,7 @@ A aquisição das imagens foi feita em vários centros de triagem com câmeras d
         \includegraphics[width=\textwidth]{images/examples_from_dataset/TRAIN061871.JPG}
         \label{fig:images_variations_1_4}
     \end{subfigure}
-    \caption{Variações de luminosidade e contrate entre imagens do JustRAIGS}
+    \caption{Variações de luminosidade e contraste entre imagens do JustRAIGS}
     \label{fig:images_variations_1}
 \end{figure}
 
@@ -412,7 +393,7 @@ Nota-se também a presença de artefatos de aquisição variados em parte das im
 \subsubsection{Divisão entre treino e teste}
 \label{sec:dataset:split}
 
-O conjunto de dados foi dividido na proporção 80\% para treinamento e 20\% para teste. Para realizar essa divisão, o conjunto foi inicialmente dividido entre NRG e RG. Para a porção de NRG foi feita uma divisão aleatória comum. Já para a porção de RG, com o intuito de preservar a proporção das anotações adicionais, foi feita uma amostragem estratificada utilizando a classe \emph{StratifiedShuffleSplit} e o método \emph{split} da biblioteca \emph{scikit-learn}. Devido a grande quantidade de anotações adicionais (10), não foi possível utilizar todas elas para a amostragem. No lugar, todas as possíveis permutações de 2, 3, 4 e 5 das anotações adicionais foram testadas. O uso de mais de 6 se mostrou impraticável devido à exaustão de representantes por classe. Para escolher a melhor permutação de anotações adicionais, foi utilizada uma métrica que avaliava a qualidade da divisão. A métrica se baseou na soma dos quadrados da diferença entre a proporção obtida e desejada para cada anotação entre os dois conjuntos. Quanto menor a pontuação mais balanceada e representativa era a divisão. Essa abordagem garantiu que a representatividade das anotações adicionais fosse preservada entre os conjuntos, mesmo para classes com baixa ocorrência.
+O conjunto de dados foi dividido na proporção 80\% para treinamento e 20\% para teste. Para realizar essa divisão, o conjunto foi inicialmente dividido entre NRG e RG. Para a porção de NRG foi feita uma divisão aleatória comum. Já para a porção de RG, com o intuito de preservar a proporção das anotações adicionais, foi feita uma amostragem estratificada utilizando a classe \emph{StratifiedShuffleSplit} e o método \emph{split} da biblioteca \emph{scikit-learn}. Devido a grande quantidade de anotações adicionais (10), não foi possível utilizar todas elas para a amostragem. No lugar, todas as possíveis permutações de 2, 3, 4 e 5 das anotações adicionais foram testadas. O uso de mais de 6 se mostrou impraticável devido à exaustão de representantes por classe. Para escolher a melhor permutação de anotações adicionais, foi utilizada uma métrica que avaliava a qualidade da divisão. A métrica se baseou na soma dos quadrados da diferença entre a proporção obtida e desejada para cada anotação entre os dois conjuntos. Quanto menor a pontuação, mais balanceada e representativa era a divisão. Essa abordagem garantiu que a representatividade das anotações adicionais fosse preservada entre os conjuntos, mesmo para classes com baixa ocorrência.
 
 \subsection{Segmentação da região de interesse}
 \label{sec:segmentation}
@@ -420,7 +401,7 @@ O conjunto de dados foi dividido na proporção 80\% para treinamento e 20\% par
 %% LZT: missing citation
 As características visuais associadas ao glaucoma, no exame de fundo de olho, estão ou no disco ótico ou em seu entorno. Portanto, para melhor aproveitamento da rede neural classificadora, segmentamos as imagens na região do disco.
 
-Para realizar essa segmentação, foi utilizado um modelo de aprendizagem profunda chamado Ultralytics YOLO11, capaz de realizar múltiplas tarefas de visão computacional em tempo real como detecção de objetos, segmentação, classificação ou estimativa de pose humana. Ele pode ser treinado em novas bases de dados para aplicações específicas. Para cada tarefa existe uma família de modelos com quantidades de parâmetros diferentes \cite{YOLO_2023}. Escolhemos o modelo \emph{yolo11m} para detecção de objetos.
+Para realizar essa segmentação, foi utilizado um modelo de aprendizagem profunda chamado Ultralytics YOLO11, capaz de realizar múltiplas tarefas de visão computacional em tempo real, como detecção de objetos, segmentação, classificação ou estimativa de pose humana. Ele pode ser treinado em novas bases de dados para aplicações específicas. Para cada tarefa existe uma família de modelos com quantidades de parâmetros diferentes \cite{YOLO_2023}. Escolhemos o modelo \emph{yolo11m} para detecção de objetos.
 
 Para treinar o YOLO, foram aleatoriamente selecionadas 1400 imagens do conjunto de treinamento: 1000 para treino, 200 para validação e 200 para teste. Em cada um dos conjuntos a proporção de RG foi de 20\%. Para cada imagem, o disco ótico foi manualmente anotado por meio de uma caixa delimitadora com duas coordenadas. As anotações foram feitas com o software AnyLabeling \cite{anylabeling}.
 
@@ -431,17 +412,19 @@ Para treinar o YOLO, foram aleatoriamente selecionadas 1400 imagens do conjunto 
  \label{fig:disk_labeling}
 \end{figure}
 
+%% CSS: criar um glossário das métricas
 Foi feito o treinamento do segmentador com 100 épocas utilizando os parâmetros padrões do YOLO. Após o treinamento, no conjunto de validação o modelo atingiu precisão e recall 1, mAP50 0.995 e mAP50-95 0.945. No teste, apresentou precisão 0.995, recall 1, mAP50 0.995 e mAP50-95 0.936.
 
+%% CSS: reescrever para deixar mais claro, pode dar a impressão que você está afirmando que algumas imagens têm dois discos ópticos.
 Em seguida, o segmentador foi aplicado para todo o conjunto de treinamento definido anteriormente na Seção~\ref{sec:dataset:split}. Das 81.138 imagens, em 80.725 (99.49\%) foi identificado apenas um disco ótico, em 332 (0.41\%) mais de um e em 81 (0.10\%) nenhum. Para todas as detecções, utilizamos o \emph{score} mínimo de 0.25, valor padrão do YOLO.
 
-Analisando as 81 imagens em que nenhuma detecção foi retornada, não conseguimos identificar uma causa predominante para a ausência de detecções. Listamos algumas das características dessas imagens, que se manifestam de forma variadas:
+Analisando as 81 imagens em que nenhuma detecção foi retornada, não conseguimos identificar uma causa predominante para a ausência de detecções. Listamos algumas das características dessas imagens, que se manifestam de formas variadas:
 
 \begin{itemize}
     \item disco ótico com limites pouco definidos
     \item imagens com baixo contraste em que disco ótico aparece "apagado"
     \item imagens desfocadas ou com baixa nitidez
-    \item lesões ou deformações anatômicas diversas no fundo do olho ao redor do disco ótico
+    \item lesões ou deformações anatômicas diversas ao redor do disco ótico
 \end{itemize}
 
 Alguns exemplos são apresentados na Figura~\ref{fig:images_no_box}.
@@ -506,7 +489,7 @@ Por outro lado, analisando as 332 imagens para as quais o modelo retornou mais d
     \label{fig:multiple_boxes}
 \end{figure}
 
-Resolvemos então escolher aleatoriamente 100 imagens dentre as 332 para treinar um novo segmentador. Foram anotadas manualmente e incluídas no conjunto de dados usado anteriormente, 50, 25 e 25 imagens para treino, validação e teste, respectivamente. Um novo treinamento foi feito então, utilizando os mesmos parâmetros do anterior. Devido à falta de experiência, adotamos uma postura cautelosa em não anotar as imagens para as quais o modelo não retornou nenhum resultado. Em uma aplicação real, casos como estes seriam encaminhados para avaliação de um médico.
+Resolvemos então escolher aleatoriamente 100 imagens dentre as 332 para treinar um novo segmentador. Foram anotadas manualmente e incluídas no conjunto de dados usado anteriormente, 50, 25 e 25 imagens para treino, validação e teste, respectivamente. Um novo treinamento foi feito então, utilizando os mesmos parâmetros do anterior. Devido à falta de experiência, adotamos uma postura cautelosa em não anotar as imagens para as quais o modelo não retornou nenhum resultado. Em uma aplicação real, casos como estes seriam encaminhados para avaliação de um médico. 
 
 Desta vez, na validação o modelo atingiu presisão e recall 1, mAP50 0.995 e mAP50-95 0.944, enquanto que no teste atingiu precisão 0.999, recall 0.991 mAP50 0.995 e mAP50-95 0.934.
 
@@ -575,7 +558,7 @@ O melhor resultado foi obtido no experimento que utilizou o otimizador ADAM. No 
  \label{fig:gen2_005_confusion_matrix}
 \end{figure}
 
-\section{Conclusões}
+\section{Conclusões e Trabalhos Futuros}
 \label{sec:conclusions}
 
 Neste trabalho foi apresentado um modelo capaz de detectar o disco ótico em imagens de fundo de olho, que obteve precisão 0.999, recall 0.991 mAP50 0.995 e mAP50-95 0.934.
@@ -583,6 +566,31 @@ Neste trabalho foi apresentado um modelo capaz de detectar o disco ótico em ima
 Destacamos o impacto positivo em se fazer uma curadoria adicional no conjunto de dados, em busca de casos difíceis para incluí-los no treinamento do modelo. Tal abordagem possibilitou reduzir o número de ambiguidades, apesar da ligeira queda de desempenho no teste. Essa queda pode ser justificada pela inclusão super representada de casos mais difíceis.
 
 Também apresentamos um classificador preliminar obtido do treinamento de uma CNN da arquitetura ResNet50, por meio de transferência de aprendizagem, capaz de identificar glaucoma em imagens de fundo de olho. O modelo apresentou uma performance ligeiramente abaixo de trabalhos relacionados, mas é esperado que haja uma melhora com o uso de outras técnicas de aumentação de dados, normalização dos dados de entrada e melhor aproveitamento do conjunto de dados.
+
+% LZT: devemos mover o plano de trabalho para o final? Ele menciona refinir
+% o classificador que ainda nem foi apresentado
+\subsection{Plano de trabalho}
+\label{sec:schedule}
+
+O plano de trabalho proposto, para o último de três períodos, contém as seguintes etapas:
+\begin{itemize}
+    \item \textbf{Refinar classificador:} continuar o treinamento do classificador, explorando outras técnicas de aumentação de dados, normalização dos dados de entrada e melhor aproveitamento do conjunto de dados
+    \item \textbf{Avaliar e comparar classificador:} comparar a performance do classificador com outras publicações
+    \item \textbf{Implementar classificador orientado a protótipos:} fazer adaptação de outros trabalhos que utilizam a ideia de protótipos para explorar a interpretabilidade
+    \item \textbf{Revisão de fundamentos:} estudo e revisão de fundamentos teóricos
+    \item \textbf{Escrita do relatório}
+\end{itemize}
+
+%% CSS: use letra maiúscula (Figura) quando referenciar uma figura específica do texto.
+A Figura~\ref{fig:crono} apresenta o cronograma proposto com as etapas definidas acima.
+
+\begin{figure}[htb]
+ \centering
+ \includegraphics[width=1.0\textwidth]{images/crono_q3.png}
+ \caption{Cronograma de execução da proposta}
+ \label{fig:crono}
+\end{figure}
+
 
 \bigskip
 
