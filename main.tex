@@ -11,6 +11,7 @@
 \usepackage{amsmath}
 \usepackage{csvsimple} 
 \usepackage{geometry}
+\usepackage{tabularx}
 
 \geometry{
     a4paper,
@@ -65,7 +66,7 @@
     
     \begin{center}
         Santo André,\\
-        Dezembro de 2024
+        Abril de 2025
     \end{center}
     
     \newpage
@@ -78,12 +79,14 @@
 \begin{quote}
 O glaucoma é a principal causa de cegueira irreversível no mundo, podendo atingir até 111,8 milhões de pessoas até 2040. Caracterizada pelo dano progressivo ao nervo ótico, a doença não tem cura e é assintomática em seus estágios iniciais, tornando o diagnóstico precoce essencial para retardar ou prevenir sua progressão. O exame de fundoscopia é uma das principais formas de identificar a doença, no qual é possível observar alterações características do glaucoma. Recentemente, técnicas de aprendizagem profunda têm sido aplicadas no diagnóstico de glaucoma em imagens de fundo de olho. O emprego de diferentes arquiteturas de redes neurais convolucionais tem apresentado resultados significativos. Contudo, a limitação da disponibilidade de imagens para treinamento e a falta de interpretabilidade são frequentemente apontadas como limitações.
 
-Neste trabalho, apresentamos um modelo capaz de localizar o disco ótico em imagens de fundo de olho, baseado na arquitetura YOLO11 de rede neural convolucional. O modelo foi treinado com 1050 imagens do banco de dados JustRAIGS e atingiu precisão 0.999, recall 0.991 mAP50 0.995 e mAP50-95 0.934. Também apresentamos um modelo classificador preliminar para glaucoma, utilizando a arquitetura ResNet50. O modelo alcançou AUC-ROC 0,9789, PRC 0,9503, F1 0,9180, precisão 0,9060 e recall 0,9304.
+Neste trabalho, apresentamos um modelo capaz de localizar o disco ótico em imagens de fundo de olho, baseado na arquitetura YOLO11 de rede neural convolucional. O modelo foi treinado com 1050 imagens do banco de dados JustRAIGS e atingiu precisão 0.999, recall 0.991 mAP50 0.995 e mAP50-95 0.934. 
+% [LZT] TODO: apresentar classificador final e métricas
+Também apresentamos um modelo classificador preliminar para glaucoma, utilizando a arquitetura ResNet50. O modelo alcançou AUC-ROC 0,9789, PRC 0,9503, F1 0,9180, precisão 0,9060 e recall 0,9304.
 
 \end{quote}
 
 \begin{center}
-Santo André, dezembro de 2024
+Santo André, abril de 2025
 \end{center}
 
 \newpage
@@ -114,6 +117,8 @@ as early detection is essential for the protection of visual function.
 %% CSS: Use \emph quando apresentar um termo novo no texto
 Uma das formas de identificar a presença de glaucoma é por meio da \emph{fundoscopia} ou exame de fundo de olho, no qual é possível observar alterações características, muitas vezes antes mesmo que a perda de visão se torne detectável \cite{weinreb_2004}. Um exemplo de imagem obtida nesse exame é apresentado na Figura~\ref{fig:fundus}.
 
+% [LZT] TODO: investigar discordacias com o que é dito no JustRAIGS
+% tavlez falar: tradicionalmente usava-se o CDR, mas agora outras características são avaliadas...
 A principal característica observada ao analisar o fundo de olho é o tamanho da \emph{escavação} em relação ao tamanho do disco ótico do paciente, ambos destacados na Figura~\ref{fig:disk}. O disco ótico é a região em que as células da retina se convergem para formar o nervo ótico. Essa convergência forma uma depressão ao centro do disco, chamada de escavação (em inglês conhecido como \emph{optic cup}). O \emph{anel neurorretiniano} é a região que envolve a escavação. A razão entre o tamanho do disco e da escavação é conhecida como razão disco-copo (em inglês \emph{cup-to-disk ratio}) e seu valor acima do normal é um indicativo do dano causado pela doença \cite{weinreb_2004}. % posso também citar weinreb_2016 para essa última afirmação
 
 \begin{figure}[htb]
@@ -158,7 +163,7 @@ O banco de dados JustRAIGS, além de incluir anotações entre referenciável pa
 
 O presente trabalho procura explorar o uso de redes neurais convolucionais no problema de classificação do glaucoma em imagens de fundo olho, além de investigar o uso das anotações adicionais presentes no JustRAIGS como forma de auxiliar na interpretabilidade dos resultados produzidos pelos modelos.
 
-O restante do texto é organizado da seguinte maneira: em primeiro lugar, apresentamos os objetivos deste trabalho na Seção~\ref{sec:objetivo}. A Seção~\ref{sec:methodology} explora o conjunto de dados escolhido, descreve o desenvolvimento e resultados do segmentador do disco ótico e descreve o treinamento do classificador preliminar. Seguindo na Seção~\ref{sec:results}, apresentamos os resultados por ele obtidos. Por fim, as conclusões são apresentadas na Seção~\ref{sec:conclusions}, junto com o plano de trabalho proposto para a próxima etapa do trabalho (Seção~\ref{sec:schedule}).
+O restante do texto é organizado da seguinte maneira: em primeiro lugar, apresentamos os objetivos deste trabalho na Seção~\ref{sec:objetivo}. A Seção~\ref{sec:methodology} explora o conjunto de dados escolhido, descreve o desenvolvimento e resultados do segmentador do disco ótico e descreve o treinamento do classificador preliminar. Seguindo na Seção~\ref{sec:results}, apresentamos os resultados por ele obtidos. Por fim, as conclusões são apresentadas na Seção~\ref{sec:conclusions}.
 
 \begin{comment}
 DESCONSIDERAR ESSE BLOCO
@@ -214,7 +219,7 @@ Noronha, 2014: 9, 16, 17, 18
     % o formato p (de parágrafo) permite ajustar largura e causa quebra de linha
     \begin{tabular}{|l|l|p{3cm}|c|c|}
     \hline
-    Artigo                                      & Método      & Banco de dados                 & ACC   & AUC   \\
+    \textbf{Artigo} & \textbf{Método} & \textbf{Banco de dados} & \textbf{ACC} & \textbf{AUC} \\
     \hline
     Noronha et al. (2014)~\cite{noronha2014hoc} & Cumulantes  & Privado com 272 imagens        & 0.847 &  -    \\
     \hline
@@ -256,22 +261,146 @@ Os objetivos específicos são:
 
 \bigskip
 
+\section{Revisão Bibliográfica}
+\label{sec:review}
 
-\bigskip
+\subsection{Fundamentos de Aprendizado de Máquina}
+\label{sec:fundamentals}
+
+% redes neurais
+
+% processamento de imagens
+% como é representada, matriz, 3 canais, pixels
+
+
+% redes neurais convolucionais
+% podemos adotar que rede convolucional é um tijolo básico e citar o paper de 1989
+% 3 ou 4 frases para estabelecar rede convolucional
+% citar resnet e artigo
+
+% treinamento de rede: objetivo, função de erro, otimizador
+% colocar fórmula da entropia cruzada
+
+% explicar aprendizado supervisionado
+% qual é a arquitetura
+% o que é para ser otimizado? como medir desempenho? qual a função de custo?
+% pode ser que a coisa a ser otimizada nao é diferenciável
+
+entropia cruzada binária
+
+Otimizadores
+
+RMSProp
+
+ADAM
+
+% regularização
+%  dropout
+%  early stopping
+
+% aumentação de dados
+
+
+
+
+% LZT TODO: fill and cite
+A ResNet50 é uma arquitetura profunda de redes neurais convolucionais composta por 50 camadas...
+
+O ImageNet é um conjunto de dados extenso e diverso, publicamente disponível, composto por mais de 1 milhão de imagens anotadas em 1000 classes. Esse conjunto é comumente usado no pré-treinamento de modelos, já que eles aprendem representações visuais genéricas que podem ser reaproveitadas em tarefas específicas por meio da técnica de \emph{transferência de aprendizagem}.
+
+A técnica de transferência de aprendizagem consiste em aproveitar os pesos aprendidos por um modelo em uma tarefa anterior para acelerar o treinamento em uma nova tarefa com menos dados disponíveis. Dessa maneira, o modelo já inicia o treinamento com filtros convolucionais capazes de extrair características visuais relevantes.
+
+
+
+\subsection{Métricas de Classificação Binária}
+\label{sec:metrics_classification}
+
+A forma mais simples de avaliar o desempenho de um modelo de classificação binária é medindo sua acurácia, isto é, sua taxa de acertos. [bishop p147 (pdf 166)] Contudo, outras métricas [Goodfellow]
+
+As predições de um classificador binário podem estar certas ou erradas em 4 formas diferentes: [Hardt]
+
+\begin{itemize}[noitemsep]
+    \item \textbf{verdadeiro positivo (VP)}: elementos corretamente classificados como positivos
+    \item \textbf{falso positivo (FP)}: elementos erroneamente classificados como positivos
+    \item \textbf{verdadeiro negativo (VN)}: elementos corretamente classificados como negativos
+    \item \textbf{falso negativo (FN)}: elementos erroneamente classificados como negativos
+\end{itemize}
+
+Podemos organizar essas quatro possibilidades na chamada matriz de confusão:
+
+% [LZT] TODO: matriz de confusão
+
+Desses valores, podemos definir as seguintes métricas:
+
+Acurácia
+(VP + VN) / (VP + FP + VN + FN)
+
+(engana quando as classes são desbalanceadas)
+A taxa de acertos do modelo. Em conjuntos de dados balanceados, pode levar a conclusões equivocadas. Por exemplo, em um conjunto em que uma das classes representa 95\% do total, é fácil atingir essa mesma acurácia apenas classificando todos os casos como tal classe.
+
+
+Precisão
+VP / (VP + FP)
+
+
+
+(dos que classificamos como positivos, quantos realmente eram positivos)
+
+Recall ou sensibilidade
+VP / (VP + FN)
+
+(de todos os casos positivos, quantos conseguimos detectar)
+
+(a capacidade em afirmar positivo para os casos positivos)
+
+De forma análoga à acurácia, é necessário certo cuidado dado que é possível obter sensibilidade perfeita classificando todos os casos como positivos.
+
+Especificidade
+VN / FP + VN
+
+(a capacidade em afirmar negativo para os casos negativos)
+
+F1
+média harmônica entre precisao e recall
+2 * precisão * recall / (precisao + recall)
+
+
+Curva precisão recall
+
+Característica de Operação do Receptor (ROC)
+
+% sensitivity at 95% specificity
+Sensibilidade em 95\% de especificidade
+
+
+% Note that in binary classification, recall of the positive class is also known as “sensitivity”; recall of the negative class is “specificity”.
+
+
+Distância de Hamming
+
+Em classificações multi-rótulo e multi-classe, a distãncia de hamming é usada .... distancia entre os vetores
+
+\subsection{Métricas de Segmentação}
+\label{sec:metrics_segmentation}
+
+YOLO
+mAP50
+
+mAP50-95
+
 
 \section{Materiais e Métodos}
 \label{sec:methodology}
 
-%% CSS: Escrever um parágrafo introdutório delineando a estrutura da seção
-Nesta seção, descrevemos as características do conjunto de dados e os tratamentos nele feitos, os passos realizados para a construção de um segmentador da região de interesse e os resultados obtidos, e os procedimentos e técnicas adotados para o treinamento de um classificador preliminar.
+Nesta seção, descrevemos as características do conjunto de dados e os tratamentos nele feitos, os passos realizados para a construção de um segmentador da região de interesse e os resultados obtidos, e os procedimentos e técnicas adotados para o treinamento de um classificador binário para identificar glaucoma e de um classificador multi-rótulo para identificar as anotações adicionais do JustRAIGS.
 
 \subsection{Conjunto de dados}
 \label{sec:dataset}
 
 Foi escolhido o conjunto de dados JustRAIGS~\cite{justraigs} que contém 101.442 imagens de fundo de olho publicamente disponíveis, derivado do conjunto de dados REGAIS – \emph{Rotterdam EyePACS Glaucoma AI Screening}~\cite{justraigs_article}. As imagens foram providas pelo EyePACS LLC em Santa Cruz, Califórnia nos EUA enquanto as anotações foram providas pelo Instituto de Oftalmologia de Roterdã (\emph{Rotterdam Ophthalmic Institute}) do \emph{Rotterdam Eye Hospital} em Roterdã nos Países Baixos.
 
-%% CSS: repita a referência para o artigo, como mudou de parágrafo, pode gerar dúvida
-%% LZT: apenas no final, ou entre cada frase? coloquei no final
+% LZT: foi disponibilizado para a competição homonima etc etc
+
 Cada imagem foi anotada por dois avaliadores (A1 e A2), selecionados aleatoriamente dentre um conjunto de avaliadores qualificados. 
 Para cada imagem, o avaliador deveria escolher uma classificação principal entre referenciável para glaucoma (referable glaucoma - RG), não referenciável (no referable glaucoma - NRG) ou ainda se não era possível avaliar a imagem (ungradable - U). Referenciável para glaucoma deveria ser escolhido se fossem esperadas perdas no campo de visão para o olho avaliado.
 Caso os dois avaliadores concordassem na classificação principal, essa classificação era dada como final, caso contrário, um terceiro avaliador (A3), especialista em glaucoma, anotava a imagem e essa anotação era dada como final.~\cite{justraigs_article}
@@ -280,6 +409,7 @@ Para os casos em que o avaliador julgasse como referenciável para glaucoma, ele
 
 As anotações adicionais são:
 \begin{itemize}
+    \setlength\itemsep{0em}
     \item \textbf{ANRS}: Aparência do anel neurorretiniano superior (\emph{Appearance neuroretinal rim superiorly})
     \item \textbf{ANRI}: Aparência do anel neurorretiniano inferior (\emph{Appearance neuroretinal rim inferiorly})
     \item \textbf{RNFLDS}: Defeito na camada de fibras nervosas da retina superior (\emph{Retinal nerve fiber layer defect superiorly})
@@ -294,9 +424,11 @@ As anotações adicionais são:
 
 Discordâncias nessas anotações adicionais, contudo, não foram resolvidas. Isto significa que há casos em que, apesar de A1 e A2 terem concordado na classificação principal como glaucoma, eles podem ter selecionado anotações adicionais diferentes para justificar sua escolha e, nesses casos, A3 não foi requisitado. Sendo assim, o conjunto de dados inclui a anotação principal final e as anotações principal e adicionais de cada avaliador. Imagens cuja classificação final foi U não foram incluídas no JustRAIGS.
 
-Para obter um valor final às anotações adicionais, no escopo deste trabalho, adotamos a seguinte regra para a resolução:
+% o paragrafo abaixo nao faz mas muito sentido, pois no classificador multilabel não vamos aplica-la. Só foi usada na divisão entre treino e teste
 
-\begin{itemize}
+Para obter um valor final às anotações adicionais, no escopo deste trabalho, adotamos a seguinte regra para a resolução de discordância:
+
+\begin{itemize}[noitemsep,topsep=0pt]
     \item A1 e A2 concordam na anotação principal $\rightarrow$ para cada anotação adicional, valor final é 1 se A1 e A2 marcaram como 1, do contrário 0
     \item A1 concorda com A3 $\rightarrow$ aplicamos a regra acima para os valores de A1 e A3
     \item A2 concorda com A3 $\rightarrow$ aplicamos a regra para os valores de A2 e A3
@@ -315,7 +447,27 @@ As análises e desenvolvimentos que seguem são baseadas no resultado obtido por
 \label{sec:dataset:analysis}
 Das 101.442 imagens que o conjunto de dados alega possuir, 19 não foram encontradas, restando 101.423. O conjunto é bastante desbalanceado: dentre todas as imagens, apenas 3.270 receberam anotação final para glaucoma, o que representa aproximadamente 3,22\% ou 1 em cada 31.
 
-Das anotações adicionais, ANRI é a mais frequente, aparecendo em 69,08\% dos casos referenciáveis para glaucoma (ou 2,23\% do total), DH por sua vez é a menos frequente, aparecendo em apenas 2,45\% (0,08\%). É possível observar certas correlações entre as anotações adicionais, apresentadas na Figura~\ref{fig:labels_correlation} por meio de uma matriz de correlação.
+Das anotações adicionais, ANRI é a mais frequente, aparecendo em 69,08\% dos casos referenciáveis para glaucoma (ou 2,23\% do total), DH por sua vez é a menos frequente, aparecendo em apenas 2,45\% (0,08\%). A quantidade de imagens para cada anotação adicionar é apresentada na Tabela~\ref{tab:features_count}. Devido à resolução de conflitos anterior, algumas imagens RG ficaram sem anotações adicionais. % [LZT] TODO: colocar quantidade
+É possível observar certas correlações entre as anotações adicionais, apresentadas na Figura~\ref{fig:labels_correlation} por meio de uma matriz de correlação.
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|c|c||c|c|}
+    \hline
+    ANRS & 0 & BCLVI & 0 \\
+    \hline
+    ANRI & 0 & NVT & 0 \\
+    \hline
+    RNFLDS & 0 & DH & 0 \\
+    \hline
+    RNFLDI & 0 & LD & 0 \\
+    \hline
+    BCLVS & 0 & LC & 0 \\
+    \hline
+    \end{tabular}
+    \caption{Quantidade de imagens por anotação adicional}
+    \label{tab:features_count}
+\end{table}
 
 \begin{figure}[htb]
  \centering
@@ -395,11 +547,29 @@ Nota-se também a presença de artefatos de aquisição variados em parte das im
 
 O conjunto de dados foi dividido na proporção 80\% para treinamento e 20\% para teste. Para realizar essa divisão, o conjunto foi inicialmente dividido entre NRG e RG. Para a porção de NRG foi feita uma divisão aleatória comum. Já para a porção de RG, com o intuito de preservar a proporção das anotações adicionais, foi feita uma amostragem estratificada utilizando a classe \emph{StratifiedShuffleSplit} e o método \emph{split} da biblioteca \emph{scikit-learn}. Devido a grande quantidade de anotações adicionais (10), não foi possível utilizar todas elas para a amostragem. No lugar, todas as possíveis permutações de 2, 3, 4 e 5 das anotações adicionais foram testadas. O uso de mais de 6 se mostrou impraticável devido à exaustão de representantes por classe. Para escolher a melhor permutação de anotações adicionais, foi utilizada uma métrica que avaliava a qualidade da divisão. A métrica se baseou na soma dos quadrados da diferença entre a proporção obtida e desejada para cada anotação entre os dois conjuntos. Quanto menor a pontuação, mais balanceada e representativa era a divisão. Essa abordagem garantiu que a representatividade das anotações adicionais fosse preservada entre os conjuntos, mesmo para classes com baixa ocorrência.
 
+\subsection{Sistema proposto}
+\label{sec:pipeline}
+
+O processo de detecção automatizada de glaucoma proposto neste trabalho envolve três etapas principais: (i) a segmentação do disco óptico na imagem de fundo de olho; (ii) a classificação da imagem como caso referenciável (RG) ou não referenciável (NRG), com base na região segmentada; e (iii) a identificação das razões que justificam a referência, por meio de um classificador multi-rótulo (\emph{multi-label}), utilizando nas anotações adicionais presentes no JustRAIGS.
+
+
+% LZT TODO: diagrama
+
+
+% Essa abordagem permite que os classificadores se concentrem exclusivamente nas regiões de interesse...
+
+% Essa abordagem em múltiplas etapas permite que os classificadores se concentrem exclusivamente nas regiões de interesse, reduzindo ruído e aumentando a precisão diagnóstica, além de fornecer explicações clínicas mais granulares para os casos detectados como suspeitos.
+
+% INCLUIR DE ALGUMA FORMA
+% Para as tarefas de classificação, utilizamos uma ResNet50 pré-treinada no conjunto de dados ImageNet. O modelo e os pesos foram obtidos da biblioteca Keras. Para adaptar a ResNet às nossas tarefas, utilizamos um parâmetro do Keras que remove a camada totalmente conectadas no topo do modelo e a substituímos por outras camadas, conforme descrito nas subseções que seguem.
+
+
+
 \subsection{Segmentação da região de interesse}
 \label{sec:segmentation}
 
-%% LZT: missing citation
-As características visuais associadas ao glaucoma, no exame de fundo de olho, estão ou no disco ótico ou em seu entorno. Portanto, para melhor aproveitamento da rede neural classificadora, segmentamos as imagens na região do disco.
+%% LZT: TODO: missing citation
+As características visuais associadas ao glaucoma, no exame de fundo de olho, estão ou no disco ótico ou em seu entorno. Portanto, para melhor aproveitamento da rede neural classificadora, segmentamos as imagens na região do disco antes de utilizá-las em um classificador.
 
 Para realizar essa segmentação, foi utilizado um modelo de aprendizagem profunda chamado Ultralytics YOLO11, capaz de realizar múltiplas tarefas de visão computacional em tempo real, como detecção de objetos, segmentação, classificação ou estimativa de pose humana. Ele pode ser treinado em novas bases de dados para aplicações específicas. Para cada tarefa existe uma família de modelos com quantidades de parâmetros diferentes \cite{YOLO_2023}. Escolhemos o modelo \emph{yolo11m} para detecção de objetos.
 
@@ -415,17 +585,26 @@ Para treinar o YOLO, foram aleatoriamente selecionadas 1400 imagens do conjunto 
 %% CSS: criar um glossário das métricas
 Foi feito o treinamento do segmentador com 100 épocas utilizando os parâmetros padrões do YOLO. Após o treinamento, no conjunto de validação o modelo atingiu precisão e recall 1, mAP50 0.995 e mAP50-95 0.945. No teste, apresentou precisão 0.995, recall 1, mAP50 0.995 e mAP50-95 0.936.
 
-%% CSS: reescrever para deixar mais claro, pode dar a impressão que você está afirmando que algumas imagens têm dois discos ópticos.
-Em seguida, o segmentador foi aplicado para todo o conjunto de treinamento definido anteriormente na Seção~\ref{sec:dataset:split}. Das 81.138 imagens, em 80.725 (99.49\%) foi identificado apenas um disco ótico, em 332 (0.41\%) mais de um e em 81 (0.10\%) nenhum. Para todas as detecções, utilizamos o \emph{score} mínimo de 0.25, valor padrão do YOLO.
+%% CSS: reescrever para deixar mais claro, pode dar a impressão que você está afirmando que algumas imagens têm dois discos ópticos. % > LZT: feito
+
+%% LZT: para pensar... por que não usar o parâmetro 'max_det' do YOLO que limita o número de detecções máximas em uma imagem?
+Em seguida, o segmentador foi aplicado para todo o conjunto de treinamento definido anteriormente na Seção~\ref{sec:dataset:split}. Das 81.138 imagens, em 80.725 (99.49\%) o modelo identificou um disco ótico, em 332 (0.41\%) mais de uma detecção foi retornada e em 81 (0.10\%) nenhuma. Para todas as detecções, utilizamos o \emph{score} mínimo de 0.25, valor padrão do YOLO.
+% [LZT] TODO: rever score mínimo, talvez usar um valor mais alto. inspecionar as imagens com score mais baixo
 
 Analisando as 81 imagens em que nenhuma detecção foi retornada, não conseguimos identificar uma causa predominante para a ausência de detecções. Listamos algumas das características dessas imagens, que se manifestam de formas variadas:
 
-\begin{itemize}
+\begin{itemize}[noitemsep,topsep=0pt]
     \item disco ótico com limites pouco definidos
     \item imagens com baixo contraste em que disco ótico aparece "apagado"
     \item imagens desfocadas ou com baixa nitidez
     \item lesões ou deformações anatômicas diversas ao redor do disco ótico
 \end{itemize}
+
+
+% LZT:
+% argumentar que optamos por não tentar explorar técnicas de processamento para melhorar a detecção nessas imagens pois:
+% - consideramos que o erro foi muito baixo e seria aceitável clinicamente
+% - não tinhamos certeza das bordas reais do disco ótico, seria uma estimativa de um leigo
 
 Alguns exemplos são apresentados na Figura~\ref{fig:images_no_box}.
 
@@ -490,10 +669,13 @@ Por outro lado, analisando as 332 imagens para as quais o modelo retornou mais d
 \end{figure}
 
 Resolvemos então escolher aleatoriamente 100 imagens dentre as 332 para treinar um novo segmentador. Foram anotadas manualmente e incluídas no conjunto de dados usado anteriormente, 50, 25 e 25 imagens para treino, validação e teste, respectivamente. Um novo treinamento foi feito então, utilizando os mesmos parâmetros do anterior. Devido à falta de experiência, adotamos uma postura cautelosa em não anotar as imagens para as quais o modelo não retornou nenhum resultado. Em uma aplicação real, casos como estes seriam encaminhados para avaliação de um médico. 
+% LZT: podemos levar o argumento das sem detecção  uns paragrafos acima
 
-Desta vez, na validação o modelo atingiu presisão e recall 1, mAP50 0.995 e mAP50-95 0.944, enquanto que no teste atingiu precisão 0.999, recall 0.991 mAP50 0.995 e mAP50-95 0.934.
+Desta vez, na validação o modelo atingiu precisão e recall 1, mAP50 0.995 e mAP50-95 0.944, enquanto que no teste atingiu precisão 0.999, recall 0.991 mAP50 0.995 e mAP50-95 0.934.
 
 Ao aplicar a segunda geração em todo o conjunto de treino, desta vez, o modelo identificou apenas um disco ótico em 81.016 imagens (99.85\%), mais de um em 63 (0.08\%) e nenhum em 59 (0.07\%).
+
+% DRAFT: No conjunto de teste (holdout) definida na Seção _ com 20k imagens, o modelo identificou apenas um disco em _ (_ %), mais de um em _ (_ %) e nenhum em _ (_ %) imagens.
 
 % IMAGENS USADAS NO YOLO
 %       gen1  new  gen2
@@ -502,25 +684,99 @@ Ao aplicar a segunda geração em todo o conjunto de treino, desta vez, o modelo
 % val    200   25   225
 % test   200   25   225
 
-\subsection{Classificação}
-\label{sec:classification}
 
-Antes de serem utilizadas no classificador, todas as imagens foram cortadas no entorno do disco ótico detectado pelo segmentador. A região do corte foi definida com as coordenadas retornadas, adicionadas de uma margem de 50\% para cada eixo.
+% As coordenadas obtidas pelo segmentador foram então utilizadas para recortar a região do disco óptico nas imagens originais. Essas regiões recortadas serviram como entrada para a próxima etapa da pipeline: a classificação de casos de glaucoma.
 
-Com o objetivo de contornar o desbalanceamento entre as classes NRG e RG durante o treinamento, todas as 2.610 imagens RG disponíveis no conjunto de treinamento foram espelhadas horizontalmente e salvas como novas imagens. Além disso, apenas um subconjunto de 10 mil imagens NRG aleatoriamente selecionadas foi utilizado, totalizando portanto 15.220 imagens.
+
+\subsection{Classificação binária}
+\label{sec:binary_classification}
+
+% overview do modelo
+% divisão das imagens
+% processamento
+% aumentação
+% etapas de treinamento, função de perda, otimizadores
+% tecnicas de regularização (early stopping e dropout)
+
+Com as regiões de interesse já extraídas, a etapa de classificação binária consistiu em treinar um modelo capaz de distinguir entre casos de glaucoma referenciável (RG) e não referenciável (NRG). Para isso, utilizamos uma rede neural convolucional moderna com o uso de estratégias de transferência de aprendizagem, descritas a seguir.
+
+Partindo de uma ResNet50 pré treinada no conjunto de dados ImageNet, removemos a camada superior e adicionamos uma camada GlobalAveragePooling2D, duas camadas totalmente conectadas de tamanhos 1024 e 256 com função de ativação ReLU e uma camada totalmente conectada de saída de tamanho 1 com função sigmoide, própria para classificação binária. Entre as novas camadas, foi aplicado \emph{dropout} com taxa de 50\%. Também experimentamos com uma arquitetura mais simples, de apenas uma camada totalmente conectada de tamanho 512 antes da saída, e outra arquitetura mais complexa, com camadas de tamanho na sequência 4096, 2048, 1024, 256 e saída.
+
+%% CSS: Conferir a questão do espelhamento; mais abaixo, quando discute aumentação, o texto diz que foi aplicado flip horizontal aleatório. Está dessa maneira mesmo (o espelhamento ocorre agora E possivelmente na aumentação)?
+%% LZT: sim, o espelhamento acontece nas duas etapas, dessa maneira as imagens RG vão ser vistas duas vezes, mas com aumentações diferentes
+As imagens disponíveis foram divididas em 80\% para treinamento e 20\% para validação. Com o objetivo de contornar o desbalanceamento entre duas classes, todas as 2.610 imagens RG disponíveis no conjunto de treinamento foram espelhadas horizontalmente e salvas como novas imagens. Além disso, apenas um subconjunto de 10 mil imagens NRG aleatoriamente selecionadas foi utilizado, resultando em uma proporção entre as duas classes de aproximadamente 1 RG para 2 NRG. Em números absolutos, foram no conjunto de treinamento 4176 (2088 x 2) imagens RG e 8000 imagens NRG, enquanto que para validação foram 522 e 2000 imagens de cada classe respectivamente. Também experimentamos uma subamostragem de NRG mais agressiva, para que a proporção fosse de 1 para 3, mas essa configuração apresentou resultado inferior à anterior.
+
+Antes de serem utilizadas no classificador, todas as imagens foram recortadas no entorno do disco ótico detectado pelo segmentador. A região do corte foi definida com as coordenadas retornadas, adicionadas de uma margem de 50\% para cada eixo.
 
 % IMAGENS USADAS NO CLASSIFICADOR
 % NRG   10.000
 % RG     5.220 (2.610 x 2)
 % total 15.220
 
-Para a tarefa de classificação entre NRG e RG, foi treinada uma ResNet50, por meio da técnica de transferência de aprendizagem, pré-treinada no conjunto de dados ImageNet. Removemos a camada superior e adicionamos uma camada GlobalAveragePooling2D, duas camadas totalmente conectadas de tamanhos 1024 e 256 com função de ativação ReLU e uma camada totalmente conectada de saída de tamanho 1 com função sigmoide. Entre as novas camadas, foi aplicado \emph{dropout} com taxa de 50\%.
+Durante o treinamento, aplicamos algumas técnicas de aumentação de dados nas imagens:
 
-Durante o treinamento, o conjunto de dados descrito foi dividido em 80\% para treinamento e 20\% para validação, e foi aumentado artificialmente com operações aleatórias de translação, rotação e zoom. Numa primeira etapa, as camadas originais da ResNet50 foram congeladas e realizado o treinamento apenas das camadas superiores novas. Em seguida, todas as camadas foram treinadas a uma taxa de aprendizagem menor, etapa chamada de ajuste fino (\emph{fine-tuning}).
+\begin{itemize}[noitemsep]
+    \item \textbf{Translação}: desloca a imagem vertical e horizontalmente
+    \item \textbf{Rotação}: gira a imagem por um ângulo aleatório
+    \item \textbf{Zoom}: aproxima ou afasta a imagem
+    \item \textbf{Espelhamento horizontal}: espelha horizontalmente a imagem com 50\% de chance
+    \item \textbf{Brilho}: aumenta ou diminui o brilho
+    \item \textbf{Contraste}: ajusta aleatoriamente o contraste
+    \item \textbf{Cor}: converte a imagem de RGB para HSV, ajusta aleatoriamente o canal de cor (hue) e converte de volta para RGB
+\end{itemize}
 
-As duas etapas fizeram uso da técnica de parada antecipada (\emph{early stopping}), observando a área da curva precisão-recall do conjunto de validação.
+Fizemos experimentos com dois processos de treinamento: em duas etapas e em etapa única. O processo de duas etapas consiste em dividir o treinamento em uma primeira fase em que os pesos do modelo original são congelados e somente os pesos da novas camadas superiores são ajustados e em uma segunda fase, conhecida como ajuste fino (\emph{fine-tuning}), em que os pesos são descongelados e o modelo é ajustado por inteiro a uma taxa de aprendizagem inferior. O processo de etapa única é equivalente ao ajuste fino, o treinamento já se inicia ajustando todos os pesos da rede à uma taxa de aprendizagem baixa.
 
-Foram feitos experimentos com os otimizadores \emph{RMSprop} e \emph{ADAM}, com taxa de aprendizagem de $10\textsuperscript{-4}$ na primeira etapa e $10\textsuperscript{-5}$ no ajuste fino, e função de perda entropia cruzada binária (\emph{binary crossentropy}).
+As etapas de treinamento fizeram uso de parada antecipada (\emph{early stopping}), uma técnica de regularização que interrompe o treinamento ao detectar que não houve melhora no desempenho do modelo no conjunto de validação após determinada quantidade de épocas. Como métrica a ser monitorada usamos a sensibilidade em 95\% de especificidade.
+
+% LZT: talvez nem valha a pena mencionar o RMSprop; usamos ele só na geração 1 que tinha contaminação e não voltamos a mexer com ele
+% Foram feitos experimentos com os otimizadores \emph{RMSprop} e \emph{ADAM}, com taxa de aprendizagem de $10\textsuperscript{-4}$ na primeira etapa e $10\textsuperscript{-5}$ no ajuste fino, e função de perda entropia cruzada binária (\emph{binary crossentropy}). Nos experimentos com somente uma etapa, utilizamos a mesma taxa de aprendizagem do ajuste fino.
+
+Utilizamos os otimizador \emph{ADAM}, com taxa de aprendizagem de $10\textsuperscript{-4}$ na primeira etapa e $10\textsuperscript{-5}$ no ajuste fino. Nos experimentos com somente uma etapa, utilizamos a mesma taxa de aprendizagem do ajuste fino. Como função de perda utilizamos a entropia cruzada binária (\emph{binary crossentropy}).
+
+Para avaliar o desempenho do classificador optamos por utilizar a sensibilidade condicionada a uma especificidade mínima de 95\%. Essa escolha se deve ao contexto clínico da aplicação: na triagem do glaucoma, queremos minimizar o número de falsos positivos, evitando sobrecarregar o sistema de saúde com encaminhamentos desnecessários. A alta especificidade garante que os pacientes encaminhados realmente apresentem sinais relevantes de glaucoma. Ao mesmo tempo, queremos maximizar a sensibilidade, isto é, a capacidade de detectar os casos verdadeiramente positivos e garantir que não estamos deixando de encaminhá-los.
+
+No contexto da identificação do glaucoma, a precisão é fortemente impactada pelo grande desbalanceamento entre as classes. Por mais que tenhamos um percentual pequeno de falsos positivos, em números absolutos ainda vamos ter muitos casos em comparação à quantidade de verdadeiros positivos, de forma que tenhamos uma precisão baixa. Portanto, apesar de reportá-la, optamos por não nos concentra nessa métrica.
+
+
+
+
+\subsection{Classificação multi-rótulo}
+\label{sec:multi_classification}
+
+Após a classificação binária entre casos referenciáveis (RG) e não referenciáveis (NRG), foi desenvolvido um segundo classificador com o objetivo de identificar as razões que justificam a marcação de uma imagem como RG, seguindo as anotações adicionais propostas pelo conjunto de dados JustRAIGS.
+
+Este classificador foi treinado apenas com as imagens rotuladas como RG no conjunto de treinamento. Uma mesma imagem pode estar associada à mais de uma razão, caracterizando o problema como uma tarefa de classificação multi-rótulo (\emph{multi-label classification}) com dez saídas, correspondentes aos dez possíveis rótulos adicionais anotados pelos avaliadores.
+
+A arquitetura do classificador multi-rótulo seguiu o mesmo processo de construção do classificador binário, utilizando uma rede ResNet50 pré-treinada no ImageNet, adaptada com camadas superiores compostas por uma camada \emph{GlobalAveragePooling2D}, seguida por camadas totalmente conectadas e \emph{dropout}, conforme descrito na Seção~\ref{sec:binary_classification}. A principal diferença em relação ao classificador binário é que a camada de saída contém dez neurônios, cada um com função de ativação sigmoide, permitindo a previsão independente de cada razão.
+
+O treinamento foi realizado com as técnicas de aumentação de dados, estratégias de regularização e configuração de otimizadores que obtiveram melhor desempenho na tarefa binária.
+
+Como descrito na seção x, no JustRAIGS é possível que os avaliadores de um determinado caso, apesar de concordarem em referencia-lo para glaucoma, tenham discordado nas anotações adicionais que justificam sua escolha. O JustRAIGS não adotou nenhuma estratégia para resolução de conflito e determinação de uma anotação final, reportando apenas as anotações individuais dos avaliadores. Dessa forma, adotamos uma estratégia para a construção de uma anotação final que representasse essa incerteza das anotações. Com base nas escolhas dos avaliadores, determinados um valor contínuo entre 0 e 1 para cada anotação, conhecido como \textit{soft-label}.
+
+
+O valor final de cada anotação adicional se deu da seguinte forma: seja A1 e A2 os dois avaliadores iniciais e A3 o especialista em glaucoma que é requisitado quando A1 e A2 discordam na anotação principal;
+para cada anotação adicionar: se A1 e A2 concordam em 0, valor final é 0, se concordam em 1 valor final é 1, se discordam, valor final é 0,6
+
+
+\begin{itemize}[noitemsep,topsep=0pt]
+    \item A1 e A2 concordam na anotação principal, para cada anotação adicional o valor final é:
+        \begin{itemize}
+            \item concordam em 0 $\rightarrow$ 0
+            \item concordam em 1 $\rightarrow$ 1
+            \item discordam $\rightarrow$ 0,6
+        \end{itemize}
+    \item A1 concorda com A3 $\rightarrow$ aplicamos a regra acima para os valores de A1 e A3
+    \item A2 concorda com A3 $\rightarrow$ aplicamos a regra para os valores de A2 e A3
+    \item todos discordam $\rightarrow$ usamos os valores de A3
+\end{itemize}
+
+
+Para a avaliação do desempenho do classificador multi-rótulo, utilizamos uma distância de Hamming modificada. A métrica tradicional considera a quantidade de posições que são diferentes entre dois vetores. No entanto, devido a existência de discordâncias entres os avaliadores nas anotações adicionais, optamos por ignorar no cálculo os rótulos para os quais houve desacordo entre os avaliadores. Dessa forma, a distância foi calculada somente para os rótulos em que houve consenso e normalizada pela quantidade deles. 
+
+
+% LZT TODO falar baseline da hamming distance chutando zero
+
 
 \subsection{Recursos computacionais}
 \label{sec:resources}
@@ -535,28 +791,103 @@ O computador estava equipado com um processador Intel i7-10700K, 32 GB de RAM e 
 % LZT: qual métrica usar para escolher o melhor modelo?
 %      adotado prc, mesmo usado no early-stopping
 
-O melhor resultado foi obtido no experimento que utilizou o otimizador ADAM. No conjunto de validação, o modelo atingiu AUC-ROC 0,9789, PRC 0,9503, F1 0,9180, precisão 0,9060 e recall 0,9304. Foram necessárias 92 epochs na primeira etapa e 33 epochs na etapa de ajuste fino. A Figura~\ref{fig:gen2_005_tt_metrics} apresenta as métricas durante a primeira fase, a Figura~\ref{fig:gen2_005_ft_metrics} métricas do ajuste fino e na Figura~\ref{fig:gen2_005_confusion_matrix} apresentamos a matriz de confusão.
 
-\begin{figure}[ht]
- \centering
- \includegraphics[width=1.0\textwidth]{images/gen2_005/top_training_metrics.png}
- \caption{Métricas da primeira etapa de treinamento do classificador}
- \label{fig:gen2_005_tt_metrics}
-\end{figure}
 
-\begin{figure}[h!t]
- \centering
- \includegraphics[width=1.0\textwidth]{images/gen2_005/fine_tuning_metrics.png}
- \caption{Métricas da etapa de ajuste fino do classificador}
- \label{fig:gen2_005_ft_metrics}
-\end{figure}
+% rmsprop vs [adam]
+% recorte [50%] vs 100%
+% dataset inteiro vs [balanceado]
+% aumentação de brilho, contraste e cor
+% tamanho da rede P [M] G
+% duas etapas vs [etapa única]
 
-\begin{figure}[htb]
- \centering
- \includegraphics[width=0.6\textwidth]{images/gen2_005/conf.png}
- \caption{Matriz de confusão do classificador}
- \label{fig:gen2_005_confusion_matrix}
-\end{figure}
+
+
+% >>> RESULTADOS DO PGC 2
+% O melhor resultado foi obtido no experimento que utilizou o otimizador ADAM. No conjunto de validação, o modelo atingiu AUC-ROC 0,9789, PRC 0,9503, F1 0,9180, precisão 0,9060 e recall 0,9304. Foram necessárias 92 epochs na primeira etapa e 33 epochs na etapa de ajuste fino. A Figura~\ref{fig:gen2_005_tt_metrics} apresenta as métricas durante a primeira fase, a Figura~\ref{fig:gen2_005_ft_metrics} métricas do ajuste fino e na Figura~\ref{fig:gen2_005_confusion_matrix} apresentamos a matriz de confusão.
+
+% \begin{figure}[ht]
+%  \centering
+%  \includegraphics[width=1.0\textwidth]{images/gen2_005/top_training_metrics.png}
+%  \caption{Métricas da primeira etapa de treinamento do classificador}
+%  \label{fig:gen2_005_tt_metrics}
+% \end{figure}
+
+% \begin{figure}[h!t]
+%  \centering
+%  \includegraphics[width=1.0\textwidth]{images/gen2_005/fine_tuning_metrics.png}
+%  \caption{Métricas da etapa de ajuste fino do classificador}
+%  \label{fig:gen2_005_ft_metrics}
+% \end{figure}
+
+% \begin{figure}[htb]
+%  \centering
+%  \includegraphics[width=0.6\textwidth]{images/gen2_005/conf.png}
+%  \caption{Matriz de confusão do classificador}
+%  \label{fig:gen2_005_confusion_matrix}
+% \end{figure}
+
+% <<<
+
+
+
+
+
+% FASE FINAL COM CONJUNTO DE TESTE (HOLDOUT)
+% SEGMENTADOR
+%   Starting from 20285 images
+%   Images with no box: 19 (0.09%)
+%   Images with one box: 20247 (99.81%)
+%   Images with more than one box: 19 (0.09%)
+%
+%   Threshould 0.25
+%   Mean score: 0.922
+%   Median score: 0.927
+%   Min score: 0.264
+%   Max score: 0.951
+%
+%
+%
+%
+%
+%
+
+
+
+\begin{table}[h]
+    \centering
+    \caption{Resultados dos modelos avaliados no conjunto de validação}
+    \begin{tabularx}{\textwidth}{l|*{4}{>{\centering\arraybackslash}X}}
+    \hline
+    \textbf{Nome} & \textbf{AUC-ROC} & \textbf{Precisão} & \textbf{Recall} & \textbf{Sens. at 95\%} \\
+    \hline
+    gen2-018 & TODO   & 0,8681 & 0,8448 & 0,9023 \\
+    gen2-021 & TODO   & 0,8665 & 0,8084 & 0,8851 \\
+    gen2-023 & TODO   & 0,8723 & 0,8506 & 0,9061 \\
+    gen2-025 & TODO   & 0,9098 & 0,8506 & 0,9387 \\
+    gen2-026 & TODO   & 0,8955 & 0,8372 & 0,9215 \\
+    \hline
+    \end{tabularx}
+    \label{tab:resultados_modelos_val}
+\end{table}
+
+
+\begin{table}[h]
+    \centering
+    \caption{Resultados dos modelos avaliados no conjunto de teste}
+    \begin{tabularx}{\textwidth}{l|*{4}{>{\centering\arraybackslash}X}}
+    \hline
+    \textbf{Nome} & \textbf{AUC-ROC} & \textbf{Precisão} & \textbf{Recall} & \textbf{Sens. at 95\%} \\
+    \hline
+    gen2-018 & 0,9725 & 0,4408 & 0,8451 & 0,8773 \\
+    gen2-023 & 0,9741 & 0,4188 & 0,8420 & 0,8758 \\
+    gen2-025 & 0,9765 & 0,4558 & 0,8390 & 0,8819 \\
+    gen2-026 & 0,9781 & 0,4789 & 0,8543 & 0,8972 \\
+    \hline
+    \end{tabularx}
+    \label{tab:resultados_modelos_test}
+\end{table}
+
+
 
 \section{Conclusões e Trabalhos Futuros}
 \label{sec:conclusions}
@@ -567,29 +898,14 @@ Destacamos o impacto positivo em se fazer uma curadoria adicional no conjunto de
 
 Também apresentamos um classificador preliminar obtido do treinamento de uma CNN da arquitetura ResNet50, por meio de transferência de aprendizagem, capaz de identificar glaucoma em imagens de fundo de olho. O modelo apresentou uma performance ligeiramente abaixo de trabalhos relacionados, mas é esperado que haja uma melhora com o uso de outras técnicas de aumentação de dados, normalização dos dados de entrada e melhor aproveitamento do conjunto de dados.
 
-% LZT: devemos mover o plano de trabalho para o final? Ele menciona refinir
-% o classificador que ainda nem foi apresentado
-\subsection{Plano de trabalho}
-\label{sec:schedule}
 
-O plano de trabalho proposto, para o último de três períodos, contém as seguintes etapas:
-\begin{itemize}
-    \item \textbf{Refinar classificador:} continuar o treinamento do classificador, explorando outras técnicas de aumentação de dados, normalização dos dados de entrada e melhor aproveitamento do conjunto de dados
-    \item \textbf{Avaliar e comparar classificador:} comparar a performance do classificador com outras publicações
-    \item \textbf{Implementar classificador orientado a protótipos:} fazer adaptação de outros trabalhos que utilizam a ideia de protótipos para explorar a interpretabilidade
-    \item \textbf{Revisão de fundamentos:} estudo e revisão de fundamentos teóricos
-    \item \textbf{Escrita do relatório}
-\end{itemize}
+% [LZT] aprendizados pessoais:
+% - sempre usar uma seed em operações que usam RNG
+% -
+% -
+% -
 
-%% CSS: use letra maiúscula (Figura) quando referenciar uma figura específica do texto.
-A Figura~\ref{fig:crono} apresenta o cronograma proposto com as etapas definidas acima.
 
-\begin{figure}[htb]
- \centering
- \includegraphics[width=1.0\textwidth]{images/crono_q3.png}
- \caption{Cronograma de execução da proposta}
- \label{fig:crono}
-\end{figure}
 
 
 \bigskip
