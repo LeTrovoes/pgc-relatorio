@@ -11,7 +11,9 @@
 \usepackage{amsmath}
 \usepackage{csvsimple} 
 \usepackage{geometry}
-\usepackage{tabularx}
+\usepackage{tabularx} % tabelas com colunas espaçadas igualmente
+\usepackage{booktabs} % linhas divisórias das tabelas
+
 
 \geometry{
     a4paper,
@@ -713,6 +715,7 @@ Antes de serem utilizadas no classificador, todas as imagens foram recortadas no
 % RG     5.220 (2.610 x 2)
 % total 15.220
 
+% testamos várias combinações de técnicas de aumentação de dados nas imagens
 Durante o treinamento, aplicamos algumas técnicas de aumentação de dados nas imagens:
 
 \begin{itemize}[noitemsep]
@@ -725,6 +728,11 @@ Durante o treinamento, aplicamos algumas técnicas de aumentação de dados nas 
     \item \textbf{Cor}: converte a imagem de RGB para HSV, ajusta aleatoriamente o canal de cor (hue) e converte de volta para RGB
 \end{itemize}
 
+Inicialmente experimentamos apenas com as transformações de translação, rotação, zoom e espelhamento, chamadas de transformações geométricas, já que apenas movimentam a imagem. Posteriormente, experimentamos com as transformações de brilho, cor e contraste, chamadas de transformações fotométricas, que alteram o valores dos pixels.
+
+% TODO adicionar figura com as aumentações
+A Figura x mostra alguns exemplos de imagens antes e depois de passarem pelas aumentações.
+
 Fizemos experimentos com dois processos de treinamento: em duas etapas e em etapa única. O processo de duas etapas consiste em dividir o treinamento em uma primeira fase em que os pesos do modelo original são congelados e somente os pesos da novas camadas superiores são ajustados e em uma segunda fase, conhecida como ajuste fino (\emph{fine-tuning}), em que os pesos são descongelados e o modelo é ajustado por inteiro a uma taxa de aprendizagem inferior. O processo de etapa única é equivalente ao ajuste fino, o treinamento já se inicia ajustando todos os pesos da rede à uma taxa de aprendizagem baixa.
 
 As etapas de treinamento fizeram uso de parada antecipada (\emph{early stopping}), uma técnica de regularização que interrompe o treinamento ao detectar que não houve melhora no desempenho do modelo no conjunto de validação após determinada quantidade de épocas. Como métrica a ser monitorada usamos a sensibilidade em 95\% de especificidade.
@@ -734,11 +742,47 @@ As etapas de treinamento fizeram uso de parada antecipada (\emph{early stopping}
 
 Utilizamos os otimizador \emph{ADAM}, com taxa de aprendizagem de $10\textsuperscript{-4}$ na primeira etapa e $10\textsuperscript{-5}$ no ajuste fino. Nos experimentos com somente uma etapa, utilizamos a mesma taxa de aprendizagem do ajuste fino. Como função de perda utilizamos a entropia cruzada binária (\emph{binary crossentropy}).
 
+A Tabela~\ref{tab:modelos_class_binaria} apresenta um quadro resumo das configurações de alguns dos experimentos que fizemos. O tamanho da rede se refere as camadas superiores adotadas na construção do modelo conforme descrito anteriormente, processo se refere ao processo de treinamento em uma ou duas etapas e aumentações são as aumentações de dados utilizadas.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{cccc}
+\toprule
+\textbf{Modelo} & \textbf{Tamanho da rede} & \textbf{Processo} & \textbf{Aumentações} \\ 
+\midrule
+018 & Médio   & Duas etapas  & Geométricas \\ 
+021 & Grande  & Duas etapas  & Geométricas \\ 
+023 & Médio   & Duas etapas  & Geométricas e fotométricas \\ 
+025 & Médio   & Etapa única  & Geométricas e fotométricas \\ 
+026 & Pequeno & Etapa única  & Geométricas e fotométricas \\ 
+\bottomrule
+\end{tabular}
+\caption{Resumo dos modelos treinados com diferentes processos e tipos de aumentação.}
+\label{tab:modelos_class_binaria}
+\end{table}
+
 Para avaliar o desempenho do classificador optamos por utilizar a sensibilidade condicionada a uma especificidade mínima de 95\%. Essa escolha se deve ao contexto clínico da aplicação: na triagem do glaucoma, queremos minimizar o número de falsos positivos, evitando sobrecarregar o sistema de saúde com encaminhamentos desnecessários. A alta especificidade garante que os pacientes encaminhados realmente apresentem sinais relevantes de glaucoma. Ao mesmo tempo, queremos maximizar a sensibilidade, isto é, a capacidade de detectar os casos verdadeiramente positivos e garantir que não estamos deixando de encaminhá-los.
 
-No contexto da identificação do glaucoma, a precisão é fortemente impactada pelo grande desbalanceamento entre as classes. Por mais que tenhamos um percentual pequeno de falsos positivos, em números absolutos ainda vamos ter muitos casos em comparação à quantidade de verdadeiros positivos, de forma que tenhamos uma precisão baixa. Portanto, apesar de reportá-la, optamos por não nos concentra nessa métrica.
+No contexto da identificação do glaucoma, a precisão é fortemente impactada pelo grande desbalanceamento entre as classes. Por mais que tenhamos um percentual pequeno de falsos positivos, em números absolutos ainda vamos ter muitos casos em comparação à quantidade de verdadeiros positivos, de forma que tenhamos uma precisão baixa. Portanto, apesar de reportá-la, optamos por não nos concentrar nessa métrica.
 
+A Tabela~\ref{tab:resultados_modelos_val} apresenta os resultados obtidos pelos modelos no conjunto de validação. O modelo 021, de maior porte, teve o pior desempenho, indicando que o aumento do tamanho da rede, isoladamente, não trouxe melhorias. A adição de aumentações fotométricas (modelo 023) resultou em pequenos ganhos de sensibilidade e precisão. Já a adoção de treinamento em etapa única (modelos 025 e 026) proporcionou melhorias mais expressivas, com destaque para o modelo 025, que alcançou a melhor sensibilidade (93,87\%). A redução do tamanho da rede no modelo 026 implicou em leve queda nas métricas, mas ainda superando os primeiros modelos avaliados.
 
+\begin{table}[h]
+    \centering
+    \caption{Resultados dos modelos avaliados no conjunto de validação}
+    \begin{tabularx}{\textwidth}{l*{4}{>{\centering\arraybackslash}X}}
+    \toprule
+    \textbf{Nome} & \textbf{Sens. em 95\%} & \textbf{AUC-ROC} & \textbf{Precisão} & \textbf{Recall}  \\
+    \midrule
+    018 & 0,9023 & TODO   & 0,8681 & 0,8448  \\
+    021 & 0,8851 & TODO   & 0,8665 & 0,8084  \\
+    023 & 0,9061 & TODO   & 0,8723 & 0,8506  \\
+    025 & 0,9387 & TODO   & 0,9098 & 0,8506  \\
+    026 & 0,9215 & TODO   & 0,8955 & 0,8372  \\
+    \bottomrule
+    \end{tabularx}
+    \label{tab:resultados_modelos_val}
+\end{table}
 
 
 \subsection{Classificação multi-rótulo}
@@ -751,31 +795,66 @@ Este classificador foi treinado apenas com as imagens rotuladas como RG no conju
 A arquitetura do classificador multi-rótulo seguiu o mesmo processo de construção do classificador binário, utilizando uma rede ResNet50 pré-treinada no ImageNet, adaptada com camadas superiores compostas por uma camada \emph{GlobalAveragePooling2D}, seguida por camadas totalmente conectadas e \emph{dropout}, conforme descrito na Seção~\ref{sec:binary_classification}. A principal diferença em relação ao classificador binário é que a camada de saída contém dez neurônios, cada um com função de ativação sigmoide, permitindo a previsão independente de cada razão.
 
 O treinamento foi realizado com as técnicas de aumentação de dados, estratégias de regularização e configuração de otimizadores que obtiveram melhor desempenho na tarefa binária.
+% todas as aumentações mencionadas, early stop com auc_macro em validação, uma etapa só, adam 10^-5
 
-Como descrito na seção x, no JustRAIGS é possível que os avaliadores de um determinado caso, apesar de concordarem em referencia-lo para glaucoma, tenham discordado nas anotações adicionais que justificam sua escolha. O JustRAIGS não adotou nenhuma estratégia para resolução de conflito e determinação de uma anotação final, reportando apenas as anotações individuais dos avaliadores. Dessa forma, adotamos uma estratégia para a construção de uma anotação final que representasse essa incerteza das anotações. Com base nas escolhas dos avaliadores, determinados um valor contínuo entre 0 e 1 para cada anotação, conhecido como \textit{soft-label}.
+Como descrito na Seção~\ref{sec:dataset}, no conjunto de dados JustRAIGS, é possível que os avaliadores, mesmo concordando em referenciar uma imagem para glaucoma, discordem nas anotações adicionais que justificam essa decisão. O JustRAIGS não implementou um mecanismo de resolução de conflitos entre avaliadores para essas anotações, disponibilizando apenas as respostas individuais.
 
+Dessa forma, propusemos uma estratégia de construção de anotações finais contínuas, conhecidas como \emph{soft-labels}, que refletem a incerteza inerente às anotações discordantes.
 
-O valor final de cada anotação adicional se deu da seguinte forma: seja A1 e A2 os dois avaliadores iniciais e A3 o especialista em glaucoma que é requisitado quando A1 e A2 discordam na anotação principal;
-para cada anotação adicionar: se A1 e A2 concordam em 0, valor final é 0, se concordam em 1 valor final é 1, se discordam, valor final é 0,6
+O processo para definição do valor final de cada anotação adicional foi estabelecido da seguinte maneira:
+\begin{itemize}[noitemsep]
+    \item Consideram-se A1 e A2 como os dois avaliadores iniciais, e A3 como o especialista em glaucoma acionado em caso de discordância na anotação principal.
+    
+    \item \textbf{Se A1 e A2 concordam na anotação principal:}\\
+    Para cada anotação adicional:
+    \begin{itemize}[noitemsep]
+        \item Se ambos marcaram 0, o valor final atribuído é 0.
+        \item Se ambos marcaram 1, o valor final atribuído é 1.
+        \item Se discordam, o valor final atribuído é 0,6, refletindo a incerteza entre os avaliadores.
+    \end{itemize}
 
-
-\begin{itemize}[noitemsep,topsep=0pt]
-    \item A1 e A2 concordam na anotação principal, para cada anotação adicional o valor final é:
-        \begin{itemize}
-            \item concordam em 0 $\rightarrow$ 0
-            \item concordam em 1 $\rightarrow$ 1
-            \item discordam $\rightarrow$ 0,6
+    \item \textbf{Se houve discordância na anotação principal e foi necessária a avaliação de A3:}
+    \begin{itemize}[noitemsep]
+        \item \textbf{Caso A3 concorde em referenciar a imagem:}\\
+        Para cada anotação adicional:
+        \begin{itemize}[noitemsep]
+            \item Se o avaliador inicial (A1 ou A2) e A3 concordam em 0, o valor final é 0.
+            \item Se concordam em 1, o valor final é 1.
+            \item Se apenas o avaliador inicial marcou 1, o valor final é 0,25.
+            \item Se apenas A3 marcou 1, o valor final é 0,9, atribuindo maior peso à opinião do especialista.
         \end{itemize}
-    \item A1 concorda com A3 $\rightarrow$ aplicamos a regra acima para os valores de A1 e A3
-    \item A2 concorda com A3 $\rightarrow$ aplicamos a regra para os valores de A2 e A3
-    \item todos discordam $\rightarrow$ usamos os valores de A3
+
+        \item \textbf{Caso A3 opte por não referenciar a imagem:}
+        \begin{itemize}[noitemsep]
+            \item Para cada anotação adicional em que um dos avaliadores iniciais marcou 1, é atribuído o valor final de 0,05, representando um indício fraco da ocorrência da característica.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Tratamento de casos de imagens marcadas como não avaliáveis (ungradable):}\\
+    Considerando que A1 marcou a imagem como ungradable
+    \begin{itemize}[noitemsep]
+        \item \textbf{Se A2 e A3 concordam em RG:}
+        \begin{itemize}[noitemsep]
+            \item Usamos a regra já descrita anteriormente
+        \end{itemize}
+        
+        \item \textbf{Se A2 e A3 discordam}
+        \begin{itemize}[noitemsep]
+            \item Se A3 marcou RG: utilizamos as anotações de A3 diretamente
+            \item Se A3 marcou NRG: as anotações de A2 recebem o valor de 0,05
+        \end{itemize}
+    \end{itemize}
+    
 \end{itemize}
 
+Essa estratégia visa refletir a incerteza das das anotações entre os avaliadores e o peso maior da opinião do especialista em casos de discordância.
 
 Para a avaliação do desempenho do classificador multi-rótulo, utilizamos uma distância de Hamming modificada. A métrica tradicional considera a quantidade de posições que são diferentes entre dois vetores. No entanto, devido a existência de discordâncias entres os avaliadores nas anotações adicionais, optamos por ignorar no cálculo os rótulos para os quais houve desacordo entre os avaliadores. Dessa forma, a distância foi calculada somente para os rótulos em que houve consenso e normalizada pela quantidade deles. 
 
-
+% LZT TODO apresentar resultados
 % LZT TODO falar baseline da hamming distance chutando zero
+
+
 
 
 \subsection{Recursos computacionais}
@@ -787,19 +866,6 @@ O computador estava equipado com um processador Intel i7-10700K, 32 GB de RAM e 
 
 \section{Resultados}
 \label{sec:results}
-
-% LZT: qual métrica usar para escolher o melhor modelo?
-%      adotado prc, mesmo usado no early-stopping
-
-
-
-% rmsprop vs [adam]
-% recorte [50%] vs 100%
-% dataset inteiro vs [balanceado]
-% aumentação de brilho, contraste e cor
-% tamanho da rede P [M] G
-% duas etapas vs [etapa única]
-
 
 
 % >>> RESULTADOS DO PGC 2
@@ -855,34 +921,16 @@ O computador estava equipado com um processador Intel i7-10700K, 32 GB de RAM e 
 
 \begin{table}[h]
     \centering
-    \caption{Resultados dos modelos avaliados no conjunto de validação}
-    \begin{tabularx}{\textwidth}{l|*{4}{>{\centering\arraybackslash}X}}
-    \hline
-    \textbf{Nome} & \textbf{AUC-ROC} & \textbf{Precisão} & \textbf{Recall} & \textbf{Sens. at 95\%} \\
-    \hline
-    gen2-018 & TODO   & 0,8681 & 0,8448 & 0,9023 \\
-    gen2-021 & TODO   & 0,8665 & 0,8084 & 0,8851 \\
-    gen2-023 & TODO   & 0,8723 & 0,8506 & 0,9061 \\
-    gen2-025 & TODO   & 0,9098 & 0,8506 & 0,9387 \\
-    gen2-026 & TODO   & 0,8955 & 0,8372 & 0,9215 \\
-    \hline
-    \end{tabularx}
-    \label{tab:resultados_modelos_val}
-\end{table}
-
-
-\begin{table}[h]
-    \centering
     \caption{Resultados dos modelos avaliados no conjunto de teste}
-    \begin{tabularx}{\textwidth}{l|*{4}{>{\centering\arraybackslash}X}}
-    \hline
-    \textbf{Nome} & \textbf{AUC-ROC} & \textbf{Precisão} & \textbf{Recall} & \textbf{Sens. at 95\%} \\
-    \hline
-    gen2-018 & 0,9725 & 0,4408 & 0,8451 & 0,8773 \\
-    gen2-023 & 0,9741 & 0,4188 & 0,8420 & 0,8758 \\
-    gen2-025 & 0,9765 & 0,4558 & 0,8390 & 0,8819 \\
-    gen2-026 & 0,9781 & 0,4789 & 0,8543 & 0,8972 \\
-    \hline
+    \begin{tabularx}{\textwidth}{l*{4}{>{\centering\arraybackslash}X}}
+    \toprule
+    \textbf{Nome} & \textbf{Sens. at 95\%} & \textbf{AUC-ROC} & \textbf{Precisão} & \textbf{Recall} \\
+    \midrule
+    018 & 0,8773 & 0,9725 & 0,4408 & 0,8451 \\
+    023 & 0,8758 & 0,9741 & 0,4188 & 0,8420 \\
+    025 & 0,8819 & 0,9765 & 0,4558 & 0,8390 \\
+    026 & 0,8972 & 0,9781 & 0,4789 & 0,8543 \\
+    \bottomrule
     \end{tabularx}
     \label{tab:resultados_modelos_test}
 \end{table}
@@ -901,9 +949,8 @@ Também apresentamos um classificador preliminar obtido do treinamento de uma CN
 
 % [LZT] aprendizados pessoais:
 % - sempre usar uma seed em operações que usam RNG
-% -
-% -
-% -
+% - definir bem quais metricas serão avaliadas, e qual será a principal, antes de iniciar os experientos
+% - fazer experimentos incrementais e que mudem apenas uma caracteristica para responder uma única pergunta
 
 
 
