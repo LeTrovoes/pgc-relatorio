@@ -13,7 +13,7 @@
 \usepackage{geometry}
 \usepackage{tabularx} % tabelas com colunas espaçadas igualmente
 \usepackage{booktabs} % linhas divisórias das tabelas
-
+\usepackage{amsfonts} % mathbb
 
 \geometry{
     a4paper,
@@ -97,10 +97,6 @@ Santo André, abril de 2025
 \section{Introdução}
 \label{sec:introducao}
 
-%% CSS: usar o ~ antes do \cite impede que o latex quebre linha entre 
-% o texto e a anotação
-% LZT: queremos evitar a quebra? Vi um caso em que a anotação chegou a
-% passar da margem do documento para evitar a quebra.
 Principal causa de cegueira irreversível no mundo \cite{steinmetz_causes_2021}, o glaucoma é uma doença sem cura, caracterizada pelo dano progressivo ao nervo ótico \cite{who_2019}. Estima-se que, em 2020, 3,6 milhões de pessoas com 50 anos ou mais já tenham perdido a visão para o Glaucoma \cite{steinmetz_causes_2021} e um estudo de 2014 ainda projeta que 111.8 milhões de pessoas sejam afetadas pela doença no ano de 2040 \cite{tham_global_2014}.
 
 O estágio inicial do glaucoma é assintomático, mas a doença causa perda progressiva da visão periférica conforme avança e pode levar à perda total da visão. O tratamento pode retardar ou prevenir a progressão, mas depende de um diagnóstico precoce, geralmente antes mesmo dos primeiros sintomas~\cite{who_2019}.
@@ -193,6 +189,142 @@ Noronha, 2014: 9, 16, 17, 18
 
 \end{comment}
 
+
+\bigskip
+
+\section{Objetivos}
+\label{sec:objetivo}
+
+O objetivo geral deste trabalho é desenvolver e avaliar um sistema baseado em aprendizagem profunda para a identificação de casos referenciáveis de glaucoma em imagens de fundo de olho, buscando também fornecer interpretações que justifiquem a decisão do modelo.
+
+Os objetivos específicos são:
+\begin{itemize}
+    \item Desenvolver um método de segmentação do disco óptico, delimitando a região de interesse (ROI) nas imagens de fundo de olho;
+    \item Treinar um classificador binário para distinguir entre casos referenciáveis para glaucoma ("referable glaucoma" - RG) e não referenciáveis ("no referable glaucoma" - NRG);
+    \item Treinar um classificador multi-rótulo para identificar características específicas associadas ao glaucoma, com base nas anotações adicionais do conjunto JustRAIGS;
+    \item Avaliar o desempenho dos modelos propostos utilizando métricas apropriadas de classificação e segmentação;
+    \item Comparar os resultados obtidos com aqueles reportados na literatura recente, especialmente trabalhos utilizando o conjunto de dados JustRAIGS.
+\end{itemize}
+
+\bigskip
+
+\section{Revisão Bibliográfica}
+\label{sec:review}
+
+\subsection{Aprendizado de Máquina}
+\label{sec:review:machine_learning}
+
+O aprendizado de máquina é uma subárea da inteligência artificial, definida em 1959 por Arthur Samuel como o campo de estudo que dá aos computadores a habilidade de aprender sem serem explicitamente programados. Posteriormente, Tom Mitchell (1997) formalizou o conceito, definindo que um programa de computador \textbf{aprende} com a experiência $E$ em relação a uma classe de tarefas $T$ e uma medida de desempenho $P$, se seu desempenho nas tarefas de $T$, medido por $P$, melhora com a experiência $E$ \cite{mitchell1997machine}.
+
+As tarefas de aprendizado de máquina podem ser classificadas em diferentes categorias, de acordo com o tipo de sinal de resposta (\textit{feedback}) disponível para o sistema \cite{russell2010artificial}:
+
+\begin{itemize}
+    \item \textbf{Aprendizado não supervisionado}: o algoritmo deve identificar padrões nos dados de entrada sem receber feedback explícito. A tarefa mais comum nessa categoria é o agrupamento de dados (\textit{clustering}).
+    
+    \item \textbf{Aprendizado supervisionado}: o algoritmo recebe pares de dados entrada-saída e deve aprender uma função que mapeie as entradas para as saídas. Um dos principais problemas nesse contexto é a classificação, em que o objetivo é atribuir um rótulo a novas entradas com base no conhecimento adquirido durante o treinamento.
+    
+    \item \textbf{Aprendizado semi-supervisionado}: ocorre quando apenas parte dos dados está rotulada, combinando técnicas de aprendizado supervisionado e não supervisionado para explorar a estrutura dos dados.
+    
+    \item \textbf{Aprendizado por reforço}: um agente aprende a tomar decisões por meio de interações com um ambiente, recebendo recompensas ou penalidades a partir de suas ações, de modo a maximizar o retorno esperado.
+\end{itemize}
+
+\subsection{Redes Neurais e Aprendizado Profundo}
+\label{sec:review:deep_learning}
+
+TODO
+
+% versão mais longa das seções de redes neurais e CNNs
+\begin{comment}
+
+\subsection{Redes Neurais Artificiais}
+\label{sec:review:ann}
+
+As redes neurais artificiais são modelos computacionais inspirados na estrutura e funcionamento dos sistemas biológicos, especialmente no cérebro humano \cite{goodfellow2016deep}. Elas são compostas por unidades chamadas neurônios artificiais, que realizam operações simples: recebem entradas ponderadas, aplicam uma função de ativação e transmitem o resultado para a próxima camada da rede.
+
+Formalmente, cada neurônio calcula uma combinação linear de suas entradas, seguida da aplicação de uma função de ativação não linear, como a função sigmoide, ReLU (\emph{Rectified Linear Unit}) ou tanh. A composição de múltiplos neurônios organizados em camadas permite à rede aprender representações cada vez mais abstratas dos dados de entrada.
+
+O treinamento de redes neurais envolve o ajuste iterativo dos pesos associados às conexões entre neurônios, de modo a minimizar o erro entre a saída prevista e o rótulo verdadeiro. O algoritmo de retropropagação do erro (\emph{backpropagation}), juntamente com métodos de otimização como o gradiente descendente, é o principal responsável por essa atualização \cite{rumelhart1986learning}.
+
+Redes neurais profundas, também conhecidas como \emph{deep neural networks}, contêm múltiplas camadas ocultas entre a entrada e a saída, permitindo a modelagem de relações altamente complexas. Esse avanço tem sido fundamental para o sucesso de aplicações recentes em áreas como reconhecimento de imagens, processamento de linguagem natural e jogos.
+
+%Treinamento de Redes Neurais
+
+O treinamento de uma rede neural consiste em ajustar os pesos das conexões entre neurônios de modo a minimizar uma função de perda, que quantifica o erro entre as previsões do modelo e os rótulos verdadeiros. Esse ajuste é realizado por meio do algoritmo de retropropagação do erro (\emph{backpropagation}), que propaga o gradiente da perda através da rede e atualiza os pesos utilizando métodos de otimização como o gradiente descendente \cite{rumelhart1986learning}.
+
+
+\subsection{Redes Neurais Convolucionais}
+\label{sec:review:cnn}
+
+As redes neurais convolucionais (\emph{Convolutional Neural Networks} — CNNs) são uma arquitetura especializada de redes neurais profundas, projetada para lidar eficientemente com dados que apresentam estrutura espacial bidimensional, como imagens. As CNNs exploram três ideias principais: campos receptivos locais, compartilhamento de pesos e subamostragem. \cite{lecun1998gradient}. Elas são compostas por camadas convolucionais, camadas de subamostragem e camadas totalmente conectadas.
+
+As camadas convolucionais são compostas por filtros (ou kernels), que são pequenas matrizes de pesos treináveis. Cada filtro percorre a imagem de entrada, realizando operações de correlação entre seus valores e as regiões locais da imagem onde está posicionado. O resultado dessas operações é uma matriz de ativações, também chamada de mapa de características (\emph{feature map}), que indica o grau de correspondência entre o filtro e diferentes regiões da imagem \cite{goodfellow2016}.
+
+Após as camadas convolucionais, é comum o uso de camadas de subamostragem (\emph{pooling}), que reduzem a dimensão espacial dos dados, promovendo invariância a pequenos deslocamentos na imagem e reduzindo a quantidade de parâmetros necessários na próxima camada. Em geral, operações como \emph{max pooling} ou \emph{average pooling} são utilizadas \cite{goodfellow2016}.
+
+As camadas finais de uma CNN são compostas por camadas totalmente conectadas, responsáveis por combinar as características extraídas pelas convoluções e realizar a previsão final. 
+
+\subsection{Contexto Histórico e Consolidação das Redes Convolucionais}
+
+% As ideias que originaram as redes convolucionais remontam ao Neocognitron, proposto por Fukushima em 1980 \cite{fukushima1980neocognitron}, um modelo que introduziu conceitos de detecção hierárquica de padrões e invariância a deslocamentos. Posteriormente, a LeNet-5 consolidou a aplicação prática das CNNs para reconhecimento de dígitos manuscritos \cite{lecun1998gradient}.
+
+Embora as redes neurais convolucionais (CNNs) tenham sido propostas ainda na década de 1990, com o desenvolvimento da LeNet-5 para reconhecimento de dígitos manuscritos \cite{lecun1998gradient}, seu impacto permaneceu limitado por restrições computacionais e pela escassez de grandes bases de dados rotulados.
+
+O ponto de inflexão ocorreu em 2012, com a introdução da AlexNet, uma arquitetura baseada em CNNs que venceu o desafio ImageNet Large Scale Visual Recognition Challenge (ILSVRC) com margem significativa sobre os métodos tradicionais \cite{krizhevsky2012imagenet}. A AlexNet demonstrou que, combinando grandes volumes de dados rotulados, capacidade computacional (particularmente GPUs) e técnicas de regularização como \emph{dropout} e funções de ativação não saturantes como ReLU, era possível treinar redes profundas de forma eficaz, superando abordagens clássicas de aprendizado de máquina.
+
+Desde então, as CNNs se consolidaram como a principal arquitetura para tarefas de visão computacional, e a pesquisa passou a se concentrar no desenvolvimento de arquiteturas cada vez mais profundas e eficientes. Diversas variantes foram propostas, como a VGGNet, que explorou arquiteturas com pequenos filtros de convolução \cite{simonyan2015very}, e a GoogLeNet, que introduziu o conceito de módulos \emph{Inception} para melhorar a eficiência \cite{szegedy2015going}.
+
+Em 2015, a introdução da ResNet trouxe um novo avanço ao permitir o treinamento de redes extremamente profundas por meio de conexões residuais \cite{he2016deep}. Essas conexões permitem o fluxo direto de gradientes através das camadas, mitigando o problema da degradação de desempenho em redes muito profundas e consolidando a aprendizagem profunda como abordagem dominante em reconhecimento de imagens.
+
+\end{comment}
+
+\subsection{Redes Neurais Convolucionais}
+\label{sec:review:cnn}
+
+As redes neurais convolucionais (\emph{Convolutional Neural Networks} - CNNs) são uma arquitetura especializada de redes neurais profundas, projetada para lidar eficientemente com dados que apresentam estrutura espacial bidimensional, como imagens. São caracterizadas pela aplicação de operações de convolução em camadas sucessivas, permitindo que o modelo aprenda padrões locais, como bordas e texturas, e, progressivamente, composições mais complexas, como formas e objetos inteiros.
+
+Uma CNN é composta pela repetição de camadas convolucionais, comumente intercaladas com camadas de subamostragem (\emph{pooling}) e, ao final, camadas totalmente conectadas (\emph{fully connected}). As camadas convolucionais extraem representações locais dos dados de entrada por meio de filtros deslizantes aprendidos, enquanto as camadas de subamostragem reduzem a dimensionalidade espacial, aumentando a robustez a pequenas variações e deslocamentos. As camadas totalmente conectadas realizam a combinação final das características extraídas para tarefas como classificação ou regressão.
+
+Apesar de conceitos precursores das CNNs terem surgido na década de 1980, e do primeiro modelo prático ter sido apresentado por LeCun et al. na década de 1990 \cite{lecun1998gradient}, as CNNs só ganharam ampla popularidade com o surgimento da AlexNet em 2012, que revolucionou a área ao vencer o desafio ImageNet Large Scale Visual Recognition Challenge (ILSVRC) \cite{krizhevsky2012imagenet}. A AlexNet demonstrou que, com volume de dados e poder computacional suficientes, aliados ao uso de técnicas de regularização e funções de ativação não lineares, era possível treinar redes convolucionais profundas com desempenho superior aos modelos tradicionais de aprendizado de máquina.
+
+Após esse avanço, diversas novas arquiteturas de CNNs foram propostas, como a VGG \cite{simonyan2015very} (2014), a GoogLeNet (posteriormente conhecida como Inception) \cite{szegedy2015going} (2014), a ResNet \cite{he2016deep} (2015) e a MobileNet \cite{howard2017mobilenet} (2017). Não demorou muito para as CNNs se popularizaram como uma metodologia de escolha para a análise de imagens médicas, com aplicações em classificação, detecção de objetos, segmentação e outros \cite{litjens_2017}. Em particular, seu uso em imagens de fundo de olho para diagnóstico de doenças oculares, incluindo a identificação de glaucoma, também ganhou destaque nos últimos anos \cite{li_review_2021}.
+
+A ResNet, proposta por He et al. em 2015 \cite{he2016deep}, introduziu o conceito de conexões residuais, que permitem o treinamento de redes muito profundas mitigando o problema da degradação do desempenho. Essas conexões consistem em atalhos que somam a entrada de uma camada diretamente à sua saída, facilitando o fluxo do gradiente durante o treinamento. A arquitetura ResNet obteve resultados de destaque, vencendo o ILSVRC de 2015. Ela se tornou uma das arquiteturas mais populares e é inclusive uma das mais utilizadas na análise de imagens de fundo de olho \cite{li_review_2021}.
+
+
+% LZT: aqui eu iria mencionar a transferência de aprendizagem e seus benefícios, mas tem um artigo que fala que o uso do ImageNet não trouxe benefícios nenhum em imagens médicas
+% raghu2019
+% Transfusion: Understanding Transfer Learning with Applications to Medical Imaging
+% http://arxiv.org/abs/1902.07208
+\begin{comment}
+\subsection{Transferência de Aprendizagem}
+\label{sec:transfer_learning}
+
+A técnica de transferência de aprendizagem consiste em aproveitar os pesos aprendidos por um modelo em uma tarefa anterior para acelerar o treinamento em uma nova tarefa com menos dados disponíveis. Dessa maneira, o modelo já inicia o treinamento com filtros convolucionais capazes de extrair características visuais relevantes.
+
+O ImageNet \cite{imagenet} é um conjunto de dados extenso e diverso, publicamente disponível, composto por mais de 1 milhão de imagens anotadas em 1000 classes. Esse conjunto é comumente usado no pré-treinamento de modelos, já que eles aprendem representações visuais genéricas que podem ser reaproveitadas em tarefas específicas por meio da transferência de aprendizagem.
+\end{comment}
+
+
+\subsection{Bases de dados para identificação de glaucoma}
+\label{sec:review:datasets}
+
+O desenvolvimento de modelos automáticos para detecção de glaucoma depende da disponibilidade de bases de dados de imagens de fundo de olho rotuladas por especialistas. Diversos conjuntos já foram produzidos e parte deles disponibilizados nos últimos anos, permitindo avanços na área.
+
+Entre os principais bancos de dados, destacamos:
+
+\begin{itemize}
+    \item \textbf{ORIGA} \cite{origa}: lançado em 2010, contém 650 imagens coletadas entre 2004 e 2007 pelo \textit{Singapore Eye Research Institute}, com anotações sobre a presença de glaucoma, medidas do disco óptico e da escavação, a identificação de hemorragias no disco, entre outros.
+    \item \textbf{DRISHTI-GS1} \cite{drishti_1} \cite{drishti_2}: coletado e anotado pelo \textit{Aravind Eye Hospital} em Madurai, Índia, foi disponibilizado em 2015 e inclui 101 imagens com rótulo de glaucoma e segmentações manuais do disco ótico e da escavação.
+    \item \textbf{RIGA} \cite{riga}: introduzido em 2018, reúne 750 imagens provenientes de três diferentes fontes, com rótulos de glaucoma e anotações dos limites do disco ótico e da escavação feitas por oftalmologistas experientes.
+    \item \textbf{ACRIMA} \cite{diaz-pinto2019cnns}: lançado como parte do programa ACRIMA, financiado pelo \textit{Ministerio de Economía y Competitividad} da Espanha, contém 705 imagens rotuladas quanto à presença de glaucoma por dois especialistas.
+    \item \textbf{RIM-ONE DL} \cite{rim-one-dl}: lançado em 2020, conta com 485 imagens, todas rotuladas quanto à presença de glaucoma e com anotações de segmentação do disco ótico e da escavação.
+    \item \textbf{REFUGE} \cite{refuge}: contendo 1200 imagens, combina informações de diagnóstico de glaucoma e segmentações manuais do disco ótico.
+    \item \textbf{JustRAIGS} \cite{justraigs}: lançado em 2024, é um dos maiores bancos disponíveis, com 101.442 imagens classificadas. Além da classificação principal (referenciável ou não para glaucoma), o JustRAIGS inclui dez anotações adicionais que registram sinais clínicos observados pelos avaliadores para justificar a escolha.
+\end{itemize}
+
+Um resumo desses conjuntos de dados é apresentado na Tabela~\ref{tab:datasets}.
+
+
 \begin{table}[htb]
     \centering
     \begin{tabular}{|c|c|c|}
@@ -205,9 +337,11 @@ Noronha, 2014: 9, 16, 17, 18
     \hline
     RIGA & 750 & 2018 \\
     \hline
+    ACRIMA & 705 & 2019 \\
+    \hline
     RIM-ONE DL & 485 & 2020 \\
     \hline
-    REFUGE & 1200 & 2020 \\
+    REFUGE & 1.200 & 2020 \\
     \hline
     JustRAIGS & 101.442 & 2024 \\
     \hline
@@ -215,6 +349,15 @@ Noronha, 2014: 9, 16, 17, 18
     \caption{Bancos de dados para avaliação de glaucoma}
     \label{tab:datasets}
 \end{table}
+
+\subsection{Trabalhos relacionados}
+\label{sec:review:related}
+
+Diversos trabalhos recentes exploraram a aplicação de técnicas de aprendizagem de máquina para a detecção de glaucoma em imagens de fundo de olho, utilizando diferentes abordagens e bancos de dados. A Tabela~\ref{tab:trabalhos} apresenta um quadro resumo dos trabalhos apresentados a seguir.
+
+Noronha et al. (2014) utilizou cumulantes de alta ordem para identificar glaucoma em 272 imagens de fundo de olho obtidas por conta própria, obtendo acurácia de 84.72\%~\cite{noronha2014hoc}. Chen et al. (2015) implementou uma rede neural convolucional contendo seis camadas, sendo quatro convolucionais e 2 totalmente conectadas, a treinou com o ORIGA e o banco de dados privado SCES, obtendo de resultado os valores de área sobre curva (AUC) 0.831 e 0.887~\cite{chen2015cnn}. Liu et al. (2019) desenvolveu uma rede convolucional baseada na arquitetura ResNet e a treinou com 241.032 imagens, obtendo uma AUC de 0.996~\cite{liu_cnn_2019}. Diaz-Pinto et al. (2019) compararam cinco modelos pré-treinados no ImageNet (VGG16, VGG19, InceptionV3, ResNet50 e Xception), utilizando cinco conjuntos de dados públicos, e constataram que o modelo Xception alcançou melhor desempenho com AUC 0,9605, especificidade 0,8580 e sensibilidade 0,9346.
+
+Em seu estudo de revisão, a respeito do uso de aprendizagem profunda em imagens de fundo de olho, Li et al. (2021) \cite{li_review_2021} aponta como algumas das limitações e áreas para melhorias futuras a baixa disponibilidade de dados anotados com qualidade e a falta de interpretabilidade dos resultados, característica inerente à aprendizagem profunda.
 
 \begin{table}[htb]
     \centering
@@ -232,42 +375,66 @@ Noronha, 2014: 9, 16, 17, 18
     Ferreira et al. (2018)~\cite{ferreira_cnn_2018} & U-Net   & RIM-ONE, DRISHTI-GS, DRIONS-DB & 1     & 1     \\
     \hline
     Liu et al. (2019)~\cite{liu_cnn_2019}       & ResNet      & Privado com 241.032 imagens    & 0.996 & -     \\
+    %\hline
+    %Nawaz et al. (2022)~\cite{nawaz_efficient_2022} & EfficientNet-B0 & ORIGA                  & 0.972 & 0.979 \\
     \hline
-    Nawaz et al. (2022)~\cite{nawaz_efficient_2022} & EfficientNet-B0 & ORIGA                  & 0.972 & 0.979 \\
+    Diaz-Pinto et al. (2029)~\cite{liu_cnn_2019} & Xception & ACRIMA, HRF, DRISHTI-GS1, RIM-ONE, sjchoi86-HRF & - & 0,9605 \\
     \hline
     \end{tabular}
     \caption{Trabalhos anteriores e resultados obtidos}
     \label{tab:trabalhos}
 \end{table}
 
-\bigskip
+\subsubsection{Competição JustRAIGS}
+\label{sec:review:related:justraigs}
 
-\section{Objetivos}
-\label{sec:objetivo}
+Com a introdução do JustRAIGS e da competição homônima promovida pelo 21º \textit{IEEE International Symposium on Biomedical Imaging} (ISBI 2024), novos trabalhos foram desenvolvidos. A competição propõe o desenvolvimento e a avaliação de algoritmos de inteligência artificial para triagem de glaucoma em imagens de fundo de olho, utilizando o conjunto de dados JustRAIGS.
 
-\begin{comment}
-Objetivos: (devem ser mensuráveis, chegar no final do trabalho e dizer que atingiu)
-  criar modelo que seja interpretável
-secundário:
- - "comparar modelos quanto à interpretabilidade"
- - determinar metodologia para comparar interpretabilidade
-\end{comment}
+A competição é dividida em duas tarefas: (i) a classificação binária entre "referenciável para glaucoma" (\textit{referable glaucoma} - RG) e "não referenciável para glaucoma" (\textit{no referable glaucoma} -  NRG), denominada \textit{referral performance}; e (ii) a classificação multi-rótulo das dez características adicionais associadas ao glaucoma observáveis nas imagens, denominada \textit{justification performance}. Mais adiante iremos apresentas as anotações adicionais do JustRAIGS.
 
-O objetivo geral deste trabalho é realizar a identificação de glaucoma em imagens de fundo de olho, utilizando um modelo de aprendizagem profunda, que seja interpretável.
+O conjunto de treinamento, disponibilizado publicamente, contém 101.442 imagens anotadas. O conjunto de teste, composto por 9.741 imagens, será mantido privado e utilizado exclusivamente para a avaliação dos modelos submetidos.
 
-Os objetivos específicos são:
-\begin{itemize}
- \item realizar a segmentação do disco ótico, a região de interesse (ROI)
- % revisão da literatura sobre diferentes arquiteturas de forma a organizar conhecimento
-\end{itemize}
+A avaliação da tarefa de classificação binária será baseada na sensitividade em um ponto de operação de 95\% de especificidade. Já a avaliação da tarefa multi-rótulo utilizará uma distância de Hamming modificada, que desconsidera rótulos nos quais os avaliadores humanos não concordaram. Mais adiante iremos retomar a discussão sobre estas métricas.
 
-\bigskip
+Diversos trabalhos recentes foram publicados em virtude da competição do ISBI 2024. A Tabela~\ref{tab:justraigs_work} mostra um resumo dos trabalhos apresentados a seguir.
 
-\section{Revisão Bibliográfica}
-\label{sec:review}
+Galdran e Ballester \cite{justraigs_galdran} utilizaram uma ResNet50 com uma estratégia própria de suavização de rótulos, atingindo no conjunto de validação uma sensitividade de 94,33\% em 95\% de especificidade e uma distância de Hamming de 0,1440 para as anotações adicionais.
 
-\subsection{Fundamentos de Aprendizado de Máquina}
-\label{sec:fundamentals}
+Zhang et al. \cite{justraigs_zhang} realizaram testes preliminares com mais de vinte arquiteturas de redes convolucionais e Transformers, optando por um ensemble de cinco ResNet50 para a tarefa de classificação binária e um ensemble de uma ResNet50 e dois Transformers para a tarefa multi-rótulo. No conjunto de teste da competição, alcançaram sensitividade de 87\% em 95\% de especificidade e distância de Hamming de 0,239.
+
+Kubrak \cite{justraigs_kubrak} aplicou a segmentação da região de interesse utilizando um modelo YOLOv8, seguida do treinamento de um Vision Transformer (ViT) para cada tarefa. Na avaliação da fase de desenvolvimento da competição, o modelo atingiu sensitividade de 90,90\% em 95\% de especificidade e distância de Hamming de 0,1280. No conjunto de validação próprio, quando a segmentação era bem-sucedida, atingiu respectivamente 93,25\% e 0,1414.
+
+Lin et al. \cite{justraigs_hu_lin} também utilizaram YOLOv8 para segmentação e Vision Transformers para classificação. No conjunto de validação próprio o modelo atingiu sensitividade de 91,59\% em 95\% de especificidade e distância de Hamming de 0,1417. Na avaliação de desenvolvimento da competição, atingiu respectivamente 85,70\% e 0,1250.
+
+
+% galdrian: https://github.com/agaldran/justraigs/blob/main/paper/ISBI24_paper_1635.pdf https://arxiv.org/abs/2406.03903
+% zhang et al https://ieeexplore.ieee.org/document/10635113
+% kubrak https://ieeexplore.ieee.org/document/10635144 - TCC https://arno.uvt.nl/show.cgi?fid=179784
+% hu lin https://arxiv.org/abs/2405.00857
+
+\begin{table}[htb]
+    \centering
+    \scriptsize
+    \begin{tabular}{|p{2.5cm}|p{3cm}|l|c|c|}
+    \hline
+    \textbf{Autor(es)} & \textbf{Arquitetura(s)} & \textbf{Estratégia adicional} & \textbf{Sen. (95\% Esp.)} & \textbf{Dist. de Hamming} \\
+    \hline
+    Galdran e Ballester \cite{justraigs_galdran} & ResNet50 & Suavização de rótulos & 94,33\%* & 0,1440* \\
+    \hline
+    Zhang et al. \cite{justraigs_zhang} & Ensemble ResNet50 + Transformers & - & 87,00\% & 0,239 \\
+    \hline
+    Kubrak \cite{justraigs_kubrak} & YOLOv8 + Vision Transformer & Segmentação da ROI & 90,90\% & 0,1280 \\
+    \hline
+    Lin et al. \cite{justraigs_hu_lin} & YOLOv8 + Vision Transformer & Segmentação da ROI & 85,70\% & 0,1250 \\
+    \hline
+    \end{tabular}
+    \caption{Resumo de trabalhos utilizando o conjunto JustRAIGS. Valores marcados com asterisco (*) correspondem a métricas obtidas em subconjuntos de validação; os demais valores foram reportados conjunto de teste da competição.}
+    \label{tab:justraigs_work}
+\end{table}
+
+
+
+
 
 % redes neurais
 
@@ -288,13 +455,13 @@ Os objetivos específicos são:
 % o que é para ser otimizado? como medir desempenho? qual a função de custo?
 % pode ser que a coisa a ser otimizada nao é diferenciável
 
-entropia cruzada binária
+% entropia cruzada binária
 
-Otimizadores
+% Otimizadores
 
-RMSProp
+% RMSProp
 
-ADAM
+% ADAM
 
 % regularização
 %  dropout
@@ -305,90 +472,99 @@ ADAM
 
 
 
-% LZT TODO: fill and cite
-A ResNet50 é uma arquitetura profunda de redes neurais convolucionais composta por 50 camadas...
 
-O ImageNet é um conjunto de dados extenso e diverso, publicamente disponível, composto por mais de 1 milhão de imagens anotadas em 1000 classes. Esse conjunto é comumente usado no pré-treinamento de modelos, já que eles aprendem representações visuais genéricas que podem ser reaproveitadas em tarefas específicas por meio da técnica de \emph{transferência de aprendizagem}.
-
-A técnica de transferência de aprendizagem consiste em aproveitar os pesos aprendidos por um modelo em uma tarefa anterior para acelerar o treinamento em uma nova tarefa com menos dados disponíveis. Dessa maneira, o modelo já inicia o treinamento com filtros convolucionais capazes de extrair características visuais relevantes.
-
-
-
-\subsection{Métricas de Classificação Binária}
+\subsection{Métricas de Classificação}
 \label{sec:metrics_classification}
 
-A forma mais simples de avaliar o desempenho de um modelo de classificação binária é medindo sua acurácia, isto é, sua taxa de acertos. [bishop p147 (pdf 166)] Contudo, outras métricas [Goodfellow]
+A forma mais simples de avaliar o desempenho de um modelo de classificação binária é por meio da acurácia, isto é, a proporção de predições corretas \cite{bishop2006pattern}. Contudo, em conjuntos desbalanceados, a acurácia pode ser uma métrica enganosa, e outras métricas tornam-se mais relevantes \cite{goodfellow2016}.
 
-As predições de um classificador binário podem estar certas ou erradas em 4 formas diferentes: [Hardt]
+As predições de um classificador binário podem ser organizadas conforme a matriz de confusão, com as seguintes definições:
 
 \begin{itemize}[noitemsep]
-    \item \textbf{verdadeiro positivo (VP)}: elementos corretamente classificados como positivos
-    \item \textbf{falso positivo (FP)}: elementos erroneamente classificados como positivos
-    \item \textbf{verdadeiro negativo (VN)}: elementos corretamente classificados como negativos
-    \item \textbf{falso negativo (FN)}: elementos erroneamente classificados como negativos
+    \item \textbf{Verdadeiro Positivo (VP)}: instâncias positivas corretamente classificadas como positivas;
+    \item \textbf{Falso Positivo (FP)}: instâncias negativas incorretamente classificadas como positivas;
+    \item \textbf{Verdadeiro Negativo (VN)}: instâncias negativas corretamente classificadas como negativas;
+    \item \textbf{Falso Negativo (FN)}: instâncias positivas incorretamente classificadas como negativas.
 \end{itemize}
 
-Podemos organizar essas quatro possibilidades na chamada matriz de confusão:
+A partir desses valores, diversas métricas podem ser calculadas:
 
-% [LZT] TODO: matriz de confusão
+\paragraph{Acurácia} Proporção de predições corretas:
 
-Desses valores, podemos definir as seguintes métricas:
+\begin{equation}
+\text{Acurácia} = \frac{VP + VN}{VP + FP + VN + FN}
+\end{equation}
 
-Acurácia
-(VP + VN) / (VP + FP + VN + FN)
+Embora amplamente utilizada, a acurácia pode ser enganosa em conjuntos de dados desbalanceados.
 
-(engana quando as classes são desbalanceadas)
-A taxa de acertos do modelo. Em conjuntos de dados balanceados, pode levar a conclusões equivocadas. Por exemplo, em um conjunto em que uma das classes representa 95\% do total, é fácil atingir essa mesma acurácia apenas classificando todos os casos como tal classe.
+\paragraph{Precisão} Proporção de predições positivas corretas:
 
+\begin{equation}
+\text{Precisão} = \frac{VP}{VP + FP}
+\end{equation}
 
-Precisão
-VP / (VP + FP)
+Mede, dentre todas as instâncias classificadas como positivas, quantas realmente são positivas.
 
+\paragraph{Sensibilidade ou Recall} Proporção de positivos corretamente identificados:
 
+\begin{equation}
+\text{Recall} = \frac{VP}{VP + FN}
+\end{equation}
 
-(dos que classificamos como positivos, quantos realmente eram positivos)
+Indica a capacidade do modelo de identificar corretamente instâncias positivas.
 
-Recall ou sensibilidade
-VP / (VP + FN)
+\paragraph{Especificidade} Proporção de negativos corretamente identificados:
 
-(de todos os casos positivos, quantos conseguimos detectar)
+\begin{equation}
+\text{Especificidade} = \frac{VN}{VN + FP}
+\end{equation}
 
-(a capacidade em afirmar positivo para os casos positivos)
+Reflete a capacidade de identificar corretamente instâncias negativas.
 
-De forma análoga à acurácia, é necessário certo cuidado dado que é possível obter sensibilidade perfeita classificando todos os casos como positivos.
+\paragraph{F1-Score} Média harmônica entre precisão e recall:
 
-Especificidade
-VN / FP + VN
+\begin{equation}
+\text{F1} = 2 \times \frac{\text{Precisão} \times \text{Recall}}{\text{Precisão} + \text{Recall}}
+\end{equation}
 
-(a capacidade em afirmar negativo para os casos negativos)
+É útil em cenários em que é necessário balancear entre precisão e recall.
 
-F1
-média harmônica entre precisao e recall
-2 * precisão * recall / (precisao + recall)
+\paragraph{Curva Precisão-Recall} Representa a relação entre a precisão e o recall para diferentes limiares de decisão. É especialmente relevante em conjuntos de dados desbalanceados.
 
+\paragraph{Curva ROC} A curva ROC (\emph{Receiver Operating Characteristic}) plota a taxa de verdadeiros positivos contra a taxa de falsos positivos para diferentes limiares. A área sob a curva (AUC) é uma métrica comum derivada da ROC.
 
-Curva precisão recall
+\paragraph{Sensibilidade em 95\% de Especificidade} Uma métrica específica para cenários clínicos de triagem, em que se busca atingir alta especificidade. Avalia a sensitividade do modelo no ponto de operação em que a especificidade é de 95\%.
 
-Característica de Operação do Receptor (ROC)
+\paragraph{Distância de Hamming}  
+Em problemas de classificação multi-rótulo, a distância de Hamming mede a proporção de posições nos vetores de rótulos que diferem:
 
-% sensitivity at 95% specificity
-Sensibilidade em 95\% de especificidade
+\begin{equation}
+\text{Distância de Hamming} = \frac{1}{n} \sum_{i=1}^{n} \mathbb{I}(y_i \neq \hat{y}_i)
+\end{equation}
 
+onde \( \mathbb{I} \) é a função indicadora que retorna 1 se \( y_i \neq \hat{y}_i \) e 0 caso contrário, \( y_i \) é o rótulo verdadeiro e \( \hat{y}_i \) é a predição.
 
-% Note that in binary classification, recall of the positive class is also known as “sensitivity”; recall of the negative class is “specificity”.
+Na competição JustRAIGS, foi utilizada uma distância de Hamming modificada, ignorando rótulos em que os avaliadores não entraram em acordo.
 
-
-Distância de Hamming
-
-Em classificações multi-rótulo e multi-classe, a distãncia de hamming é usada .... distancia entre os vetores
 
 \subsection{Métricas de Segmentação}
 \label{sec:metrics_segmentation}
 
-YOLO
-mAP50
+\paragraph{Índice de Jaccard ou Intersection over Union (IoU)}
+O índice de Jaccard, também conhecido como Intersection over Union (IoU), é uma métrica amplamente utilizada para avaliar a similaridade entre duas regiões segmentadas. É definido como a razão entre a área de interseção e a área da união entre a predição e o rótulo verdadeiro:
 
-mAP50-95
+\begin{equation}
+\text{IoU} = \frac{|\text{Predição} \cap \text{Verdadeiro}|}{|\text{Predição} \cup \text{Verdadeiro}|}
+\end{equation}
+
+onde \( |\cdot| \) denota a área (número de pixels) da respectiva região. Um valor de IoU igual a 1 indica sobreposição perfeita entre a segmentação prevista e a verdadeira, enquanto valores mais baixos indicam sobreposição parcial ou ausente.
+
+Outra métrica comumente utilizada é a média da precisão média (\emph{mean Average Precision} — mAP).
+
+\paragraph{mAP50} Corresponde à média da precisão média considerando apenas predições com \emph{Intersection over Union} (IoU) superior a 50\%.
+
+\paragraph{mAP50-95}  
+Corresponde à média das precisões médias em múltiplos limiares de IoU, variando de 50\% a 95\% em intervalos de 5\%. Esta métrica fornece uma avaliação mais rigorosa e detalhada da qualidade da segmentação.
 
 
 \section{Materiais e Métodos}
@@ -400,8 +576,6 @@ Nesta seção, descrevemos as características do conjunto de dados e os tratame
 \label{sec:dataset}
 
 Foi escolhido o conjunto de dados JustRAIGS~\cite{justraigs} que contém 101.442 imagens de fundo de olho publicamente disponíveis, derivado do conjunto de dados REGAIS – \emph{Rotterdam EyePACS Glaucoma AI Screening}~\cite{justraigs_article}. As imagens foram providas pelo EyePACS LLC em Santa Cruz, Califórnia nos EUA enquanto as anotações foram providas pelo Instituto de Oftalmologia de Roterdã (\emph{Rotterdam Ophthalmic Institute}) do \emph{Rotterdam Eye Hospital} em Roterdã nos Países Baixos.
-
-% LZT: foi disponibilizado para a competição homonima etc etc
 
 Cada imagem foi anotada por dois avaliadores (A1 e A2), selecionados aleatoriamente dentre um conjunto de avaliadores qualificados. 
 Para cada imagem, o avaliador deveria escolher uma classificação principal entre referenciável para glaucoma (referable glaucoma - RG), não referenciável (no referable glaucoma - NRG) ou ainda se não era possível avaliar a imagem (ungradable - U). Referenciável para glaucoma deveria ser escolhido se fossem esperadas perdas no campo de visão para o olho avaliado.
@@ -693,22 +867,21 @@ Ao aplicar a segunda geração em todo o conjunto de treino, desta vez, o modelo
 \subsection{Classificação binária}
 \label{sec:binary_classification}
 
-% overview do modelo
-% divisão das imagens
-% processamento
-% aumentação
-% etapas de treinamento, função de perda, otimizadores
-% tecnicas de regularização (early stopping e dropout)
-
-Com as regiões de interesse já extraídas, a etapa de classificação binária consistiu em treinar um modelo capaz de distinguir entre casos de glaucoma referenciável (RG) e não referenciável (NRG). Para isso, utilizamos uma rede neural convolucional moderna com o uso de estratégias de transferência de aprendizagem, descritas a seguir.
+Com as regiões de interesse já extraídas, a etapa de classificação binária consistiu em treinar um modelo capaz de distinguir entre casos referenciáveis para glaucoma (RG) e não referenciáveis (NRG). Para isso, utilizamos uma rede neural convolucional moderna empregando transferência de aprendizagem a partir de um modelo pré-treinado, como descrito a seguir.
 
 Partindo de uma ResNet50 pré treinada no conjunto de dados ImageNet, removemos a camada superior e adicionamos uma camada GlobalAveragePooling2D, duas camadas totalmente conectadas de tamanhos 1024 e 256 com função de ativação ReLU e uma camada totalmente conectada de saída de tamanho 1 com função sigmoide, própria para classificação binária. Entre as novas camadas, foi aplicado \emph{dropout} com taxa de 50\%. Também experimentamos com uma arquitetura mais simples, de apenas uma camada totalmente conectada de tamanho 512 antes da saída, e outra arquitetura mais complexa, com camadas de tamanho na sequência 4096, 2048, 1024, 256 e saída.
 
+
+As imagens disponíveis no conjunto de treino definido na Seção~\ref{sec:dataset:split} foram subdivididas entre treino e validação para a etapa de treinamento do classificador. A divisão foi realizada de forma estratificada, mantendo a proporção entre as classes, alocando 80\% das imagens para o treinamento e 20\% para a validação, conforme o processo descrito anteriormente.
+
+
 %% CSS: Conferir a questão do espelhamento; mais abaixo, quando discute aumentação, o texto diz que foi aplicado flip horizontal aleatório. Está dessa maneira mesmo (o espelhamento ocorre agora E possivelmente na aumentação)?
 %% LZT: sim, o espelhamento acontece nas duas etapas, dessa maneira as imagens RG vão ser vistas duas vezes, mas com aumentações diferentes
-As imagens disponíveis foram divididas em 80\% para treinamento e 20\% para validação. Com o objetivo de contornar o desbalanceamento entre duas classes, todas as 2.610 imagens RG disponíveis no conjunto de treinamento foram espelhadas horizontalmente e salvas como novas imagens. Além disso, apenas um subconjunto de 10 mil imagens NRG aleatoriamente selecionadas foi utilizado, resultando em uma proporção entre as duas classes de aproximadamente 1 RG para 2 NRG. Em números absolutos, foram no conjunto de treinamento 4176 (2088 x 2) imagens RG e 8000 imagens NRG, enquanto que para validação foram 522 e 2000 imagens de cada classe respectivamente. Também experimentamos uma subamostragem de NRG mais agressiva, para que a proporção fosse de 1 para 3, mas essa configuração apresentou resultado inferior à anterior.
+%% LZT: agora percebi que a proporção entre as classes ficou diferente no conjunto de treinamento (1:2) e no de validação (1:4). Isso é um problema? Talvez precise explicar melhor isso no texto
 
-Antes de serem utilizadas no classificador, todas as imagens foram recortadas no entorno do disco ótico detectado pelo segmentador. A região do corte foi definida com as coordenadas retornadas, adicionadas de uma margem de 50\% para cada eixo.
+Com o objetivo de contornar o desbalanceamento entre as duas classes, todas as 2.610 imagens RG disponíveis no conjunto de treinamento foram espelhadas horizontalmente e salvas como novas imagens. Além disso, apenas um subconjunto de 10 mil imagens NRG aleatoriamente selecionadas foi utilizado, resultando em uma proporção entre as duas classes de aproximadamente 1 RG para 2 NRG. Em números absolutos, foram no conjunto de treinamento 4176 (2088 x 2) imagens RG e 8000 imagens NRG, enquanto que para validação foram 522 e 2000 imagens de cada classe respectivamente. Também experimentamos uma subamostragem de NRG mais agressiva, para que a proporção fosse de 1 para 3, mas essa configuração apresentou resultado inferior à anterior.
+
+Antes de serem utilizadas no classificador, todas as imagens foram recortadas no entorno do disco ótico detectado pelo segmentador. A região do corte foi definida com as coordenadas retornadas pelo modelo, acrescidas de uma margem de 50\% para cada eixo.
 
 % IMAGENS USADAS NO CLASSIFICADOR
 % NRG   10.000
@@ -728,21 +901,18 @@ Durante o treinamento, aplicamos algumas técnicas de aumentação de dados nas 
     \item \textbf{Cor}: converte a imagem de RGB para HSV, ajusta aleatoriamente o canal de cor (hue) e converte de volta para RGB
 \end{itemize}
 
-Inicialmente experimentamos apenas com as transformações de translação, rotação, zoom e espelhamento, chamadas de transformações geométricas, já que apenas movimentam a imagem. Posteriormente, experimentamos com as transformações de brilho, cor e contraste, chamadas de transformações fotométricas, que alteram o valores dos pixels.
+Inicialmente experimentamos apenas com as transformações de translação, rotação, zoom e espelhamento, chamadas de transformações geométricas, que apenas movimentam a imagem. Posteriormente, experimentamos com as transformações de brilho, cor e contraste, chamadas de transformações fotométricas, que alteram o valores dos pixels.
 
 % TODO adicionar figura com as aumentações
-A Figura x mostra alguns exemplos de imagens antes e depois de passarem pelas aumentações.
+A Figura x mostra alguns exemplos de imagens antes e depois de passarem pelas transformações.
 
-Fizemos experimentos com dois processos de treinamento: em duas etapas e em etapa única. O processo de duas etapas consiste em dividir o treinamento em uma primeira fase em que os pesos do modelo original são congelados e somente os pesos da novas camadas superiores são ajustados e em uma segunda fase, conhecida como ajuste fino (\emph{fine-tuning}), em que os pesos são descongelados e o modelo é ajustado por inteiro a uma taxa de aprendizagem inferior. O processo de etapa única é equivalente ao ajuste fino, o treinamento já se inicia ajustando todos os pesos da rede à uma taxa de aprendizagem baixa.
+Fizemos experimentos com dois processos de treinamento: em duas etapas e em etapa única. O processo de duas etapas consiste em dividir o treinamento em uma primeira fase em que os pesos do modelo original são congelados e somente os pesos da novas camadas superiores são ajustados e em uma segunda fase, conhecida como ajuste fino (\emph{fine-tuning}), em que todos os pesos são descongelados e o modelo é ajustado por inteiro a uma taxa de aprendizagem inferior. O processo de etapa única é equivalente ao ajuste fino, o treinamento já se inicia ajustando todos os pesos da rede à uma taxa de aprendizagem baixa.
 
 As etapas de treinamento fizeram uso de parada antecipada (\emph{early stopping}), uma técnica de regularização que interrompe o treinamento ao detectar que não houve melhora no desempenho do modelo no conjunto de validação após determinada quantidade de épocas. Como métrica a ser monitorada usamos a sensibilidade em 95\% de especificidade.
 
-% LZT: talvez nem valha a pena mencionar o RMSprop; usamos ele só na geração 1 que tinha contaminação e não voltamos a mexer com ele
-% Foram feitos experimentos com os otimizadores \emph{RMSprop} e \emph{ADAM}, com taxa de aprendizagem de $10\textsuperscript{-4}$ na primeira etapa e $10\textsuperscript{-5}$ no ajuste fino, e função de perda entropia cruzada binária (\emph{binary crossentropy}). Nos experimentos com somente uma etapa, utilizamos a mesma taxa de aprendizagem do ajuste fino.
-
 Utilizamos os otimizador \emph{ADAM}, com taxa de aprendizagem de $10\textsuperscript{-4}$ na primeira etapa e $10\textsuperscript{-5}$ no ajuste fino. Nos experimentos com somente uma etapa, utilizamos a mesma taxa de aprendizagem do ajuste fino. Como função de perda utilizamos a entropia cruzada binária (\emph{binary crossentropy}).
 
-A Tabela~\ref{tab:modelos_class_binaria} apresenta um quadro resumo das configurações de alguns dos experimentos que fizemos. O tamanho da rede se refere as camadas superiores adotadas na construção do modelo conforme descrito anteriormente, processo se refere ao processo de treinamento em uma ou duas etapas e aumentações são as aumentações de dados utilizadas.
+A Tabela~\ref{tab:modelos_class_binaria} apresenta um quadro resumo das configurações de alguns dos experimentos que fizemos. O tamanho da rede se refere as camadas superiores adotadas na construção do modelo conforme descrito anteriormente, o processo se refere ao processo de treinamento em uma ou duas etapas e aumentações são as aumentações aplicadas nas imagens.
 
 \begin{table}[h]
 \centering
@@ -763,9 +933,10 @@ A Tabela~\ref{tab:modelos_class_binaria} apresenta um quadro resumo das configur
 
 Para avaliar o desempenho do classificador optamos por utilizar a sensibilidade condicionada a uma especificidade mínima de 95\%. Essa escolha se deve ao contexto clínico da aplicação: na triagem do glaucoma, queremos minimizar o número de falsos positivos, evitando sobrecarregar o sistema de saúde com encaminhamentos desnecessários. A alta especificidade garante que os pacientes encaminhados realmente apresentem sinais relevantes de glaucoma. Ao mesmo tempo, queremos maximizar a sensibilidade, isto é, a capacidade de detectar os casos verdadeiramente positivos e garantir que não estamos deixando de encaminhá-los.
 
+% LZT: talvez fassa mais sentido mover essa discussão para a seção de resultados e discussão
 No contexto da identificação do glaucoma, a precisão é fortemente impactada pelo grande desbalanceamento entre as classes. Por mais que tenhamos um percentual pequeno de falsos positivos, em números absolutos ainda vamos ter muitos casos em comparação à quantidade de verdadeiros positivos, de forma que tenhamos uma precisão baixa. Portanto, apesar de reportá-la, optamos por não nos concentrar nessa métrica.
 
-A Tabela~\ref{tab:resultados_modelos_val} apresenta os resultados obtidos pelos modelos no conjunto de validação. O modelo 021, de maior porte, teve o pior desempenho, indicando que o aumento do tamanho da rede, isoladamente, não trouxe melhorias. A adição de aumentações fotométricas (modelo 023) resultou em pequenos ganhos de sensibilidade e precisão. Já a adoção de treinamento em etapa única (modelos 025 e 026) proporcionou melhorias mais expressivas, com destaque para o modelo 025, que alcançou a melhor sensibilidade (93,87\%). A redução do tamanho da rede no modelo 026 implicou em leve queda nas métricas, mas ainda superando os primeiros modelos avaliados.
+A Tabela~\ref{tab:resultados_modelos_val} apresenta os resultados obtidos pelos modelos no conjunto de validação. O modelo 021, de maior porte, teve o pior desempenho, indicando que o aumento do tamanho da rede, isoladamente, não trouxe melhorias. A adição de aumentações fotométricas (modelo 023) resultou em pequenos ganhos. Já a adoção de treinamento em etapa única (modelos 025 e 026) proporcionou melhorias mais expressivas, com destaque para o modelo 025, que alcançou a melhor sensibilidade (93,87\%). A redução do tamanho da rede no modelo 026 implicou em leve queda nas métricas, mas ainda superando os primeiros modelos avaliados.
 
 \begin{table}[h]
     \centering
@@ -792,14 +963,11 @@ Após a classificação binária entre casos referenciáveis (RG) e não referen
 
 Este classificador foi treinado apenas com as imagens rotuladas como RG no conjunto de treinamento. Uma mesma imagem pode estar associada à mais de uma razão, caracterizando o problema como uma tarefa de classificação multi-rótulo (\emph{multi-label classification}) com dez saídas, correspondentes aos dez possíveis rótulos adicionais anotados pelos avaliadores.
 
-A arquitetura do classificador multi-rótulo seguiu o mesmo processo de construção do classificador binário, utilizando uma rede ResNet50 pré-treinada no ImageNet, adaptada com camadas superiores compostas por uma camada \emph{GlobalAveragePooling2D}, seguida por camadas totalmente conectadas e \emph{dropout}, conforme descrito na Seção~\ref{sec:binary_classification}. A principal diferença em relação ao classificador binário é que a camada de saída contém dez neurônios, cada um com função de ativação sigmoide, permitindo a previsão independente de cada razão.
+A arquitetura do classificador multi-rótulo foi construída a partir da mesma base do classificador binário, utilizando uma ResNet50 pré-treinada no ImageNet com camadas superiores substituídas por uma \emph{GlobalAveragePooling2D} e camadas totalmente conectadas de tamanhos 1024, 256 e 10, conforme descrito na Seção~\ref{sec:binary_classification}. A diferença para o classificador binário está na camada de saída que possui dez unidades, cada uma com função de ativação sigmoide, permitindo a previsão independente de cada razão.
 
-O treinamento foi realizado com as técnicas de aumentação de dados, estratégias de regularização e configuração de otimizadores que obtiveram melhor desempenho na tarefa binária.
-% todas as aumentações mencionadas, early stop com auc_macro em validação, uma etapa só, adam 10^-5
+O treinamento foi realizado em uma única etapa, com taxa de aprendizagem de $10^{-5}$ e otimizador ADAM, empregando as mesmas técnicas de aumentação de dados e estratégias de regularização aplicadas na tarefa binária, incluindo \emph{dropout} e parada antecipada (\emph{early stopping}).
 
-Como descrito na Seção~\ref{sec:dataset}, no conjunto de dados JustRAIGS, é possível que os avaliadores, mesmo concordando em referenciar uma imagem para glaucoma, discordem nas anotações adicionais que justificam essa decisão. O JustRAIGS não implementou um mecanismo de resolução de conflitos entre avaliadores para essas anotações, disponibilizando apenas as respostas individuais.
-
-Dessa forma, propusemos uma estratégia de construção de anotações finais contínuas, conhecidas como \emph{soft-labels}, que refletem a incerteza inerente às anotações discordantes.
+Como descrito na Seção~\ref{sec:dataset}, no conjunto de dados JustRAIGS, é possível que os avaliadores, mesmo concordando em referenciar uma imagem para glaucoma, discordem nas anotações adicionais que justificam essa decisão. O JustRAIGS não implementou um mecanismo de resolução de conflitos entre avaliadores para essas anotações, disponibilizando apenas as respostas individuais. Dessa forma, propusemos uma estratégia de construção de anotações finais contínuas, conhecidas como \emph{soft-labels}, que refletem a incerteza inerente às anotações discordantes.
 
 O processo para definição do valor final de cada anotação adicional foi estabelecido da seguinte maneira:
 \begin{itemize}[noitemsep]
@@ -851,11 +1019,9 @@ Essa estratégia visa refletir a incerteza das das anotações entre os avaliado
 
 Para a avaliação do desempenho do classificador multi-rótulo, utilizamos uma distância de Hamming modificada. A métrica tradicional considera a quantidade de posições que são diferentes entre dois vetores. No entanto, devido a existência de discordâncias entres os avaliadores nas anotações adicionais, optamos por ignorar no cálculo os rótulos para os quais houve desacordo entre os avaliadores. Dessa forma, a distância foi calculada somente para os rótulos em que houve consenso e normalizada pela quantidade deles. 
 
-% LZT TODO apresentar resultados
-% LZT TODO falar baseline da hamming distance chutando zero
+% LZT TODO inlcuir Subset Accuracy
 
-
-
+No conjunto de validação, o modelo atingiu uma distância de Hamming média de $X$, precisão $Y$, sensitividade (recall) $Z$ e F1-score $W$, estas três últimas calculadas com média micro. Para fins de comparação, avaliamos um classificador trivial que prevê a ausência de todas as razões (todos os rótulos iguais a zero) para todas as imagens. Esse classificador \textit{baseline} obteve uma distância de Hamming média de 0,28819, demonstrando que o modelo treinado superou a estratégia básica.
 
 \subsection{Recursos computacionais}
 \label{sec:resources}
@@ -940,11 +1106,11 @@ O computador estava equipado com um processador Intel i7-10700K, 32 GB de RAM e 
 \section{Conclusões e Trabalhos Futuros}
 \label{sec:conclusions}
 
-Neste trabalho foi apresentado um modelo capaz de detectar o disco ótico em imagens de fundo de olho, que obteve precisão 0.999, recall 0.991 mAP50 0.995 e mAP50-95 0.934.
+% Neste trabalho foi apresentado um modelo capaz de detectar o disco ótico em imagens de fundo de olho, que obteve precisão 0.999, recall 0.991 mAP50 0.995 e mAP50-95 0.934.
 
-Destacamos o impacto positivo em se fazer uma curadoria adicional no conjunto de dados, em busca de casos difíceis para incluí-los no treinamento do modelo. Tal abordagem possibilitou reduzir o número de ambiguidades, apesar da ligeira queda de desempenho no teste. Essa queda pode ser justificada pela inclusão super representada de casos mais difíceis.
+% Destacamos o impacto positivo em se fazer uma curadoria adicional no conjunto de dados, em busca de casos difíceis para incluí-los no treinamento do modelo. Tal abordagem possibilitou reduzir o número de ambiguidades, apesar da ligeira queda de desempenho no teste. Essa queda pode ser justificada pela inclusão super representada de casos mais difíceis.
 
-Também apresentamos um classificador preliminar obtido do treinamento de uma CNN da arquitetura ResNet50, por meio de transferência de aprendizagem, capaz de identificar glaucoma em imagens de fundo de olho. O modelo apresentou uma performance ligeiramente abaixo de trabalhos relacionados, mas é esperado que haja uma melhora com o uso de outras técnicas de aumentação de dados, normalização dos dados de entrada e melhor aproveitamento do conjunto de dados.
+% Também apresentamos um classificador preliminar obtido do treinamento de uma CNN da arquitetura ResNet50, por meio de transferência de aprendizagem, capaz de identificar glaucoma em imagens de fundo de olho. O modelo apresentou uma performance ligeiramente abaixo de trabalhos relacionados, mas é esperado que haja uma melhora com o uso de outras técnicas de aumentação de dados, normalização dos dados de entrada e melhor aproveitamento do conjunto de dados.
 
 
 % [LZT] aprendizados pessoais:
