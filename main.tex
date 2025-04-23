@@ -14,11 +14,16 @@
 \usepackage{tabularx} % tabelas com colunas espaçadas igualmente
 \usepackage{booktabs} % linhas divisórias das tabelas
 \usepackage{amsfonts} % mathbb
+\usepackage[hidelinks]{hyperref} % referencas dentro do documento
+
+
+% \usepackage{tikz}
+% \usetikzlibrary{arrows.meta, positioning}
 
 \geometry{
     a4paper,
     left=3cm,
-    top = 3cm,
+    top=3cm,
     right=2cm,
     bottom=2cm
 }
@@ -71,8 +76,8 @@
         Abril de 2025
     \end{center}
     
-    \newpage
-\bigskip
+\newpage
+
 
 \begin{center}
 \noindent{\bf \Large Resumo}
@@ -91,9 +96,6 @@ Santo André, abril de 2025
 \end{center}
 
 \newpage
-\bigskip
-
-
 
 
 \begin{center}
@@ -115,9 +117,10 @@ Santo André, abril de 2025
 \end{center}
 
 \newpage
-\bigskip
 
+\tableofcontents
 
+\newpage
 
 
 \section{Introdução}
@@ -325,25 +328,27 @@ Um resumo desses conjuntos de dados é apresentado na Tabela~\ref{tab:datasets}.
 
 \begin{table}[htb]
     \centering
-    \begin{tabular}{|c|c|c|}
-    \hline
-    Nome & Nº de imagens & Ano de publicação \\
-    \hline
+    \begin{tabularx}{\textwidth}{XXX}
+    %\hline
+    \toprule
+    \textbf{Nome} & \textbf{Nº de imagens} & \textbf{Ano de publicação} \\
+    \midrule
+    %\hline
     ORIGA & 650 & 2010 \\
-    \hline
+    %\hline
     DRISHTI-GS1 & 101 & 2015 \\
-    \hline
+    %\hline
     RIGA & 750 & 2018 \\
-    \hline
+    %\hline
     ACRIMA & 705 & 2019 \\
-    \hline
+    %\hline
     RIM-ONE DL & 485 & 2020 \\
-    \hline
+    %\hline
     REFUGE & 1.200 & 2020 \\
-    \hline
+    %\hline
     JustRAIGS & 101.442 & 2024 \\
-    \hline
-    \end{tabular}
+    \bottomrule
+    \end{tabularx}
     \caption{Bancos de dados para avaliação de glaucoma}
     \label{tab:datasets}
 \end{table}
@@ -357,31 +362,64 @@ Noronha et al. (2014) utilizou cumulantes de alta ordem para identificar glaucom
 
 Em seu estudo de revisão, a respeito do uso de aprendizagem profunda em imagens de fundo de olho, Li et al. (2021) \cite{li_review_2021} aponta como algumas das limitações e áreas para melhorias futuras a baixa disponibilidade de dados anotados com qualidade e a falta de interpretabilidade dos resultados, característica inerente à aprendizagem profunda.
 
+% \begin{table}[htb]
+%     \centering
+%     % o formato p (de parágrafo) permite ajustar largura e causa quebra de linha
+%     \begin{tabular}{|l|l|p{3cm}|c|c|}
+%     \hline
+%     \textbf{Artigo} & \textbf{Método} & \textbf{Banco de dados} & \textbf{ACC} & \textbf{AUC} \\
+%     \hline
+%     Noronha et al. (2014)~\cite{noronha2014hoc} & Cumulantes  & Privado com 272 imagens        & 0.847 &  -    \\
+%     \hline
+%     Chen et al. (2015)~\cite{chen2015cnn}       & CNN própria & ORIGA                          & -     & 0.831 \\
+%     \hline
+%     Chen et al. (2015)~\cite{chen2015cnn}       & CNN própria & ORIGA, SCES                    & -     & 0.887 \\
+%     \hline
+%     Ferreira et al. (2018)~\cite{ferreira_cnn_2018} & U-Net   & RIM-ONE, DRISHTI-GS, DRIONS-DB & 1     & 1     \\
+%     \hline
+%     Liu et al. (2019)~\cite{liu_cnn_2019}       & ResNet      & Privado com 241.032 imagens    & 0.996 & -     \\
+%     %\hline
+%     %Nawaz et al. (2022)~\cite{nawaz_efficient_2022} & EfficientNet-B0 & ORIGA                  & 0.972 & 0.979 \\
+%     \hline
+%     Diaz-Pinto et al. (2029)~\cite{liu_cnn_2019} & Xception & ACRIMA, HRF, DRISHTI-GS1, RIM-ONE, sjchoi86-HRF & - & 0,9605 \\
+%     \hline
+%     \end{tabular}
+%     \caption{Trabalhos anteriores e resultados obtidos}
+%     \label{tab:trabalhos}
+% \end{table}
+
+
+
 \begin{table}[htb]
     \centering
+    \small
+    \renewcommand{\arraystretch}{1.2}
     % o formato p (de parágrafo) permite ajustar largura e causa quebra de linha
-    \begin{tabular}{|l|l|p{3cm}|c|c|}
-    \hline
+    \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3cm}l>{\raggedright\arraybackslash}Xcc}
+    \toprule
     \textbf{Artigo} & \textbf{Método} & \textbf{Banco de dados} & \textbf{ACC} & \textbf{AUC} \\
-    \hline
+    \midrule
     Noronha et al. (2014)~\cite{noronha2014hoc} & Cumulantes  & Privado com 272 imagens        & 0.847 &  -    \\
-    \hline
+
     Chen et al. (2015)~\cite{chen2015cnn}       & CNN própria & ORIGA                          & -     & 0.831 \\
-    \hline
+
     Chen et al. (2015)~\cite{chen2015cnn}       & CNN própria & ORIGA, SCES                    & -     & 0.887 \\
-    \hline
+
     Ferreira et al. (2018)~\cite{ferreira_cnn_2018} & U-Net   & RIM-ONE, DRISHTI-GS, DRIONS-DB & 1     & 1     \\
-    \hline
+
     Liu et al. (2019)~\cite{liu_cnn_2019}       & ResNet      & Privado com 241.032 imagens    & 0.996 & -     \\
     %\hline
     %Nawaz et al. (2022)~\cite{nawaz_efficient_2022} & EfficientNet-B0 & ORIGA                  & 0.972 & 0.979 \\
-    \hline
+
     Diaz-Pinto et al. (2029)~\cite{liu_cnn_2019} & Xception & ACRIMA, HRF, DRISHTI-GS1, RIM-ONE, sjchoi86-HRF & - & 0,9605 \\
-    \hline
-    \end{tabular}
+
+    \bottomrule
+    \end{tabularx}
+    \renewcommand{\arraystretch}{1}
     \caption{Trabalhos anteriores e resultados obtidos}
     \label{tab:trabalhos}
 \end{table}
+
 
 \subsubsection{Competição JustRAIGS}
 \label{sec:review:related:justraigs}
@@ -410,29 +448,49 @@ Lin et al. \cite{justraigs_hu_lin} também utilizaram YOLOv8 para segmentação 
 % kubrak https://ieeexplore.ieee.org/document/10635144 - TCC https://arno.uvt.nl/show.cgi?fid=179784
 % hu lin https://arxiv.org/abs/2405.00857
 
-\begin{table}[htb]
+% \begin{table}[h]
+%     \centering
+%     \scriptsize
+%     \begin{tabular}{|p{2.5cm}|p{3cm}|l|c|c|}
+%     \hline
+%     \textbf{Autor(es)} & \textbf{Arquitetura(s)} & \textbf{Estratégia adicional} & \textbf{Sen. (95\% Esp.)} & \textbf{Dist. de Hamming} \\
+%     \hline
+%     Galdran e Ballester \cite{justraigs_galdran} & ResNet50 & Suavização de rótulos & 94,33\%* & 0,1440* \\
+%     \hline
+%     Zhang et al. \cite{justraigs_zhang} & Ensemble ResNet50 + Transformers & - & 87,00\% & 0,239 \\
+%     \hline
+%     Kubrak \cite{justraigs_kubrak} & YOLOv8 + Vision Transformer & Segmentação do disco & 90,90\% & 0,1280 \\
+%     \hline
+%     Lin et al. \cite{justraigs_hu_lin} & YOLOv8 + Vision Transformer & Segmentação do disco & 85,70\% & 0,1250 \\
+%     \hline
+%     \end{tabular}
+%     \caption{Resumo de trabalhos utilizando o conjunto JustRAIGS. Valores marcados com asterisco (*) correspondem a métricas obtidas em subconjuntos de validação; os demais valores foram reportados conjunto de teste da competição.}
+%     \label{tab:justraigs_work}
+% \end{table}
+
+
+
+\begin{table}[h]
     \centering
     \scriptsize
-    \begin{tabular}{|p{2.5cm}|p{3cm}|l|c|c|}
-    \hline
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{p{2.5cm}p{3cm}lcc}
+    \toprule
     \textbf{Autor(es)} & \textbf{Arquitetura(s)} & \textbf{Estratégia adicional} & \textbf{Sen. (95\% Esp.)} & \textbf{Dist. de Hamming} \\
-    \hline
+    \midrule
     Galdran e Ballester \cite{justraigs_galdran} & ResNet50 & Suavização de rótulos & 94,33\%* & 0,1440* \\
-    \hline
+
     Zhang et al. \cite{justraigs_zhang} & Ensemble ResNet50 + Transformers & - & 87,00\% & 0,239 \\
-    \hline
-    Kubrak \cite{justraigs_kubrak} & YOLOv8 + Vision Transformer & Segmentação da ROI & 90,90\% & 0,1280 \\
-    \hline
-    Lin et al. \cite{justraigs_hu_lin} & YOLOv8 + Vision Transformer & Segmentação da ROI & 85,70\% & 0,1250 \\
-    \hline
-    \end{tabular}
+
+    Kubrak \cite{justraigs_kubrak} & YOLOv8 + Vision Transformer & Segmentação do disco & 90,90\% & 0,1280 \\
+
+    Lin et al. \cite{justraigs_hu_lin} & YOLOv8 + Vision Transformer & Segmentação do disco & 85,70\% & 0,1250 \\
+    \bottomrule
+    \end{tabularx}
+    \renewcommand{\arraystretch}{1}
     \caption{Resumo de trabalhos utilizando o conjunto JustRAIGS. Valores marcados com asterisco (*) correspondem a métricas obtidas em subconjuntos de validação; os demais valores foram reportados conjunto de teste da competição.}
     \label{tab:justraigs_work}
 \end{table}
-
-
-
-
 
 % redes neurais
 
@@ -1126,14 +1184,19 @@ Os resultados obtidos indicam que sistemas baseados em aprendizagem profunda apr
 
 
 
-\bigskip
+\newpage
 
 %% LZT: Como fazer para não incluir a lista completa de nomes? [SBB+21] ficou muito grande
 %% CSS: Parte da mudança para biblatex; suspendendo por enquanto,
 % ver comentário no preâmbulo (5/9/2024)
 % \printbibliography
-\bibliographystyle{alpha}%{hapalike}
-\bibliography{ref.bib}
+
+% teste
+% \bibliographystyle{alpha}%{hapalike}
+% \bibliography{ref.bib}
+
+\bibliographystyle{plain}
+\bibliography{ref}
 
 
 \end{document}
