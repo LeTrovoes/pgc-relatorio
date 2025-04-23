@@ -79,11 +79,34 @@
 \end{center}
 
 \begin{quote}
-O glaucoma é a principal causa de cegueira irreversível no mundo, podendo atingir até 111,8 milhões de pessoas até 2040. Caracterizada pelo dano progressivo ao nervo ótico, a doença não tem cura e é assintomática em seus estágios iniciais, tornando o diagnóstico precoce essencial para retardar ou prevenir sua progressão. O exame de fundoscopia é uma das principais formas de identificar a doença, no qual é possível observar alterações características do glaucoma. Recentemente, técnicas de aprendizagem profunda têm sido aplicadas no diagnóstico de glaucoma em imagens de fundo de olho. O emprego de diferentes arquiteturas de redes neurais convolucionais tem apresentado resultados significativos. Contudo, a limitação da disponibilidade de imagens para treinamento e a falta de interpretabilidade são frequentemente apontadas como limitações.
+O glaucoma é a principal causa de cegueira irreversível no mundo, com projeção de atingir até 111,8 milhões de pessoas em 2040. Caracterizada pelo dano progressivo ao nervo óptico, a doença é assintomática em seus estágios iniciais, tornando o diagnóstico precoce essencial para seu controle. O exame de fundo de olho permite a identificação de sinais característicos da doença, e técnicas de aprendizagem profunda têm demonstrado grande potencial na triagem automatizada.
 
-Neste trabalho, apresentamos um modelo capaz de localizar o disco ótico em imagens de fundo de olho, baseado na arquitetura YOLO11 de rede neural convolucional. O modelo foi treinado com 1050 imagens do banco de dados JustRAIGS e atingiu precisão 0.999, recall 0.991 mAP50 0.995 e mAP50-95 0.934. 
-% [LZT] TODO: apresentar classificador final e métricas
-Também apresentamos um modelo classificador preliminar para glaucoma, utilizando a arquitetura ResNet50. O modelo alcançou AUC-ROC 0,9789, PRC 0,9503, F1 0,9180, precisão 0,9060 e recall 0,9304.
+Este trabalho propôs o desenvolvimento de um sistema baseado em redes neurais convolucionais para a detecção de casos de glaucoma referível em imagens de fundo de olho. O sistema é composto por três etapas principais: segmentação do disco óptico, classificação binária entre casos referíveis e não referíveis, e classificação multi-rótulo das características clínicas justificadoras, utilizando o conjunto de dados JustRAIGS.
+
+No conjunto de teste definido, o modelo atingiu sensitividade de 89,72\% em 95\% de especificidade e AUC-ROC de 0,9781 na tarefa de classificação binária. Na tarefa de classificação multi-rótulo, obteve distância de Hamming de 0,12960. O sistema apresentou desempenho competitivo em relação a trabalhos recentes da literatura, demonstrando sua aplicabilidade como ferramenta auxiliar na triagem de glaucoma.
+\end{quote}
+
+\begin{center}
+Santo André, abril de 2025
+\end{center}
+
+\newpage
+\bigskip
+
+
+
+
+\begin{center}
+\noindent{\bf \Large Abstract}
+\end{center}
+
+\begin{quote}
+
+Glaucoma is the leading cause of irreversible blindness worldwide, with projections estimating up to 111.8 million affected individuals by 2040. Characterized by progressive damage to the optic nerve, the disease is asymptomatic in its early stages, making early diagnosis crucial for its management. Fundus imaging enables the identification of characteristic signs of glaucoma, and deep learning techniques have shown great potential for automated screening.
+
+This work proposes the development of a system based on convolutional neural networks for the detection of referable glaucoma cases in fundus images. The system comprises three main stages: optic disc segmentation, binary classification between referable and non-referable cases, and multi-label classification of clinical justifications, using the JustRAIGS dataset.
+
+On the defined test set, the proposed model achieved a sensitivity of 89.72\% at 95\% specificity and an AUC-ROC of 0.9781 in the binary classification task. In the multi-label classification task, it achieved a Hamming distance of 0.12960. The system demonstrated competitive performance compared to recent works in the literature, supporting its applicability as an auxiliary tool for glaucoma screening.
 
 \end{quote}
 
@@ -94,23 +117,15 @@ Santo André, abril de 2025
 \newpage
 \bigskip
 
+
+
+
 \section{Introdução}
 \label{sec:introducao}
 
 Principal causa de cegueira irreversível no mundo \cite{steinmetz_causes_2021}, o glaucoma é uma doença sem cura, caracterizada pelo dano progressivo ao nervo ótico \cite{who_2019}. Estima-se que, em 2020, 3,6 milhões de pessoas com 50 anos ou mais já tenham perdido a visão para o Glaucoma \cite{steinmetz_causes_2021} e um estudo de 2014 ainda projeta que 111.8 milhões de pessoas sejam afetadas pela doença no ano de 2040 \cite{tham_global_2014}.
 
-O estágio inicial do glaucoma é assintomático, mas a doença causa perda progressiva da visão periférica conforme avança e pode levar à perda total da visão. O tratamento pode retardar ou prevenir a progressão, mas depende de um diagnóstico precoce, geralmente antes mesmo dos primeiros sintomas~\cite{who_2019}.
-
-\begin{comment}
-O tratamento consiste em reduzir a pressão intra-ocular e 
-
-fatores de risco: idade, histórico familiar
-
-OMS: General population screening for glaucoma is not currently
-considered to be cost-effective in most settings (63). Therefore,
-routine eye examinations are recommended for high-risk individuals
-as early detection is essential for the protection of visual function. 
-\end{comment}
+O estágio inicial do glaucoma é assintomático, mas a doença causa perda progressiva da visão periférica conforme avança e pode levar à perda total da visão. O tratamento pode retardar ou prevenir a progressão, mas depende de um diagnóstico precoce, geralmente antes mesmo dos primeiros sintomas \cite{who_2019}.
 
 %% CSS: Use \emph quando apresentar um termo novo no texto
 Uma das formas de identificar a presença de glaucoma é por meio da \emph{fundoscopia} ou exame de fundo de olho, no qual é possível observar alterações características, muitas vezes antes mesmo que a perda de visão se torne detectável \cite{weinreb_2004}. Um exemplo de imagem obtida nesse exame é apresentado na Figura~\ref{fig:fundus}.
@@ -126,24 +141,10 @@ A principal característica observada ao analisar o fundo de olho é o tamanho d
  \label{fig:fundus}
 \end{figure}
 
-\begin{comment}
-Dentre as características observadas estão: 1, 2, 3, 4 e 5. cite{"Five rules to evaluate the optic disc and retinal nerve fiber layer for glaucoma"}
+% entretanto a análise manual por oftalmologistas é sujetivel a falhas
+%
 
-A capacidade da inteligência artificial em --- atrai seu uso na medicina. cite{alguem}
-
-uso de IA com imagens médicas aumentou\\
-
-
-fazer a avaliação manual gera divergência entre médicos, falta de padronização -> podemos fazer de forma automática
-\end{comment}
-
-\begin{comment}
-da pra falar que médicas acreditam no potencial da IA
-tem essa pesquisa aqui mas me parece muito restrita: só australia e nova zelancia e só com  trainees
-...médicos acreditam que IA vai melhorar o trabalho deles... \cite{scheetz_survey_2021}
-\end{comment}
-
-Recentemente, diversas técnicas de aprendizagem profunda vem sendo aplicadas no diagnóstico de doenças com base em imagens de fundo de olho, inclusive para o glaucoma~\cite{li_review_2021}. Para possibilitar o desenvolvimento desses modelos, bancos de dados com imagens de fundo de olho classificadas por oftalmologistas foram criados e alguns deles disponibilizados publicamente, como o RIGA~\cite{riga}, ORIGA~\cite{origa}, RIM-ONE DL~\cite{RIMONEDL} e JustRAIGS~\cite{justraigs}. Um quadro resumo com alguns conjuntos de dados é apresentado na Tabela~\ref{tab:datasets}. 
+Com o avanço das técnicas de aprendizagem profunda, modelos de redes neurais convolucionais têm se mostrado promissores na análise automática de imagens de fundo de olho para auxílio no diagnóstico do glaucoma \cite{li_review_2021}, capazes de até mesmo superar a avaliação humana \cite{tan_glaucoma_2020}. No entanto, desafios persistem, como a escassez de grandes bases de dados anotadas e a necessidade de aumentar a interpretabilidade dos modelos \cite{li_review_2021}.
 
 \begin{figure}[htb]
  \centering
@@ -152,16 +153,9 @@ Recentemente, diversas técnicas de aprendizagem profunda vem sendo aplicadas no
  \label{fig:disk}
 \end{figure}
 
-Trabalhos anteriores conseguiram realizar a classificação de imagens entre glaucoma e não glaucoma utilizando diferentes técnicas. Noronha et al. (2014) utilizou cumulantes de alta ordem para identificar glaucoma em 272 imagens de fundo de olho obtidas por conta própria, obtendo acurácia de 84.72\%~\cite{noronha2014hoc}. Chen et al. (2015) implementou uma rede neural convolucional, contendo seis camadas sendo quatro convolucionais e 2 totalmente conectadas, e a treinou em dois bancos de dados privados, obtendo de resultado os valores de área sobre curva (AUC) 0.831 e 0.887~\cite{chen2015cnn}. Liu et al. (2019) desenvolveu uma rede convolucional baseada na arquitetura ResNet e a treinou com 241.032 imagens, obtendo uma AUC de 0.996~\cite{liu_cnn_2019}. Um quadro resumo com estes e outros trabalhos é apresentado na Tabela~\ref{tab:trabalhos}.
+Neste trabalho, exploramos o uso de aprendizagem profunda para a detecção de casos referenciáveis de glaucoma em imagens de fundo de olho. Para isso, utilizamos o banco de dados JustRAIGS, que além das classificações principais, inclui anotações adicionais que justificam a decisão clínica. Buscamos não apenas realizar a classificação binária, mas também desenvolver um classificador multi-rótulo que aponte as anotações adicionais definidas no JustRAIGS, de modo a fornecer justificativa para a decisão.
 
-Em seu estudo de revisão, a respeito do uso de aprendizagem profunda em imagens de fundo de olho, Li et al.~\cite{li_review_2021} aponta como algumas das limitações e áreas para melhorias futuras a baixa disponibilidade de dados anotados com qualidade e a falta de interpretabilidade dos resultados, característica inerente à aprendizagem profunda.
-
-%% CSS: citar alguns exemplos de anotações extra do justRaigs, para exemplificar
-O banco de dados JustRAIGS, além de incluir anotações entre referenciável para glaucoma ou não para 101.422 imagens, também possui 10 anotações adicionais, para sinais observados pelos avaliadores, que justifiquem a escolha da imagem como referenciável para glaucoma, naquelas assim marcadas~\cite{justraigs_article}.
-
-O presente trabalho procura explorar o uso de redes neurais convolucionais no problema de classificação do glaucoma em imagens de fundo olho, além de investigar o uso das anotações adicionais presentes no JustRAIGS como forma de auxiliar na interpretabilidade dos resultados produzidos pelos modelos.
-
-O restante do texto é organizado da seguinte maneira: em primeiro lugar, apresentamos os objetivos deste trabalho na Seção~\ref{sec:objetivo}. A Seção~\ref{sec:methodology} explora o conjunto de dados escolhido, descreve o desenvolvimento e resultados do segmentador do disco ótico e descreve o treinamento do classificador preliminar. Seguindo na Seção~\ref{sec:results}, apresentamos os resultados por ele obtidos. Por fim, as conclusões são apresentadas na Seção~\ref{sec:conclusions}.
+O restante deste texto está organizado da seguinte maneira: a Seção~\ref{sec:objetivo} apresenta os objetivos do trabalho. A Seção~\ref{sec:review} discute conceitos fundamentais de aprendizagem profunda e visão computacional aplicados à tarefa, além de apresentar os bancos de dados utilizados e trabalhos relacionados. A metodologia proposta é detalhada na Seção~\ref{sec:methodology}, os resultados obtidos são discutidos na Seção~\ref{sec:results}, e as conclusões são apresentadas na Seção~\ref{sec:conclusions}.
 
 \begin{comment}
 DESCONSIDERAR ESSE BLOCO
@@ -200,7 +194,7 @@ O objetivo geral deste trabalho é desenvolver e avaliar um sistema baseado em a
 Os objetivos específicos são:
 \begin{itemize}
     \item Desenvolver um método de segmentação do disco óptico, delimitando a região de interesse (ROI) nas imagens de fundo de olho;
-    \item Treinar um classificador binário para distinguir entre casos referenciáveis para glaucoma ("referable glaucoma" - RG) e não referenciáveis ("no referable glaucoma" - NRG);
+    \item Treinar um classificador binário para glaucoma;
     \item Treinar um classificador multi-rótulo para identificar características específicas associadas ao glaucoma, com base nas anotações adicionais do conjunto JustRAIGS;
     \item Avaliar o desempenho dos modelos propostos utilizando métricas apropriadas de classificação e segmentação;
     \item Comparar os resultados obtidos com aqueles reportados na literatura recente, especialmente trabalhos utilizando o conjunto de dados JustRAIGS.
@@ -231,7 +225,12 @@ As tarefas de aprendizado de máquina podem ser classificadas em diferentes cate
 \subsection{Redes Neurais e Aprendizado Profundo}
 \label{sec:review:deep_learning}
 
-TODO
+Redes neurais artificiais são modelos computacionais inspirados na estrutura do cérebro humano, compostos por unidades chamadas neurônios artificiais organizados em camadas. Cada neurônio realiza uma operação matemática simples, mas a composição de múltiplas camadas permite ao modelo aprender representações complexas dos dados \cite{goodfellow2016}.
+
+O \textit{aprendizado profundo} (\textit{deep learning}) é uma subdivisão do aprendizado de máquina que utiliza redes neurais com múltiplas camadas ocultas. Essas camadas permitem que o modelo aprenda representações hierárquicas de características a partir de dados de entrada.
+
+O avanço no treinamento de redes profundas, impulsionado por maiores volumes de dados, poder computacional e inovações algorítmicas como o uso de funções de ativação não-lineares e regularização, levou ao ressurgimento do interesse por redes neurais na última década, consolidando o aprendizado profundo como a principal abordagem em diversas áreas de inteligência artificial \cite{goodfellow2016}.
+
 
 % versão mais longa das seções de redes neurais e CNNs
 \begin{comment}
@@ -280,9 +279,9 @@ Em 2015, a introdução da ResNet trouxe um novo avanço ao permitir o treinamen
 \subsection{Redes Neurais Convolucionais}
 \label{sec:review:cnn}
 
-As redes neurais convolucionais (\emph{Convolutional Neural Networks} - CNNs) são uma arquitetura especializada de redes neurais profundas, projetada para lidar eficientemente com dados que apresentam estrutura espacial bidimensional, como imagens. São caracterizadas pela aplicação de operações de convolução em camadas sucessivas, permitindo que o modelo aprenda padrões locais, como bordas e texturas, e, progressivamente, composições mais complexas, como formas e objetos inteiros.
+As redes neurais convolucionais (\emph{Convolutional Neural Networks} - CNNs) são uma arquitetura especializada de redes neurais profundas, projetada para lidar eficientemente com dados que apresentam estrutura espacial bidimensional, como imagens. \cite{lecun1998gradient} São caracterizadas pela aplicação de operações de convolução em camadas sucessivas, permitindo que o modelo aprenda padrões locais, como bordas e texturas, e, progressivamente, composições mais complexas, como formas e objetos inteiros.
 
-Uma CNN é composta pela repetição de camadas convolucionais, comumente intercaladas com camadas de subamostragem (\emph{pooling}) e, ao final, camadas totalmente conectadas (\emph{fully connected}). As camadas convolucionais extraem representações locais dos dados de entrada por meio de filtros deslizantes aprendidos, enquanto as camadas de subamostragem reduzem a dimensionalidade espacial, aumentando a robustez a pequenas variações e deslocamentos. As camadas totalmente conectadas realizam a combinação final das características extraídas para tarefas como classificação ou regressão.
+Uma CNN é composta pela repetição de camadas convolucionais, comumente intercaladas com camadas de subamostragem (\emph{pooling}) e, ao final, camadas totalmente conectadas (\emph{fully connected}). As camadas convolucionais extraem representações locais dos dados de entrada por meio de filtros deslizantes aprendidos, enquanto as camadas de subamostragem reduzem a dimensionalidade espacial, aumentando a robustez a pequenas variações e deslocamentos. \cite{goodfellow2016} As camadas totalmente conectadas realizam a combinação final das características extraídas para tarefas como classificação ou regressão.
 
 Apesar de conceitos precursores das CNNs terem surgido na década de 1980, e do primeiro modelo prático ter sido apresentado por LeCun et al. na década de 1990 \cite{lecun1998gradient}, as CNNs só ganharam ampla popularidade com o surgimento da AlexNet em 2012, que revolucionou a área ao vencer o desafio ImageNet Large Scale Visual Recognition Challenge (ILSVRC) \cite{krizhevsky2012imagenet}. A AlexNet demonstrou que, com volume de dados e poder computacional suficientes, aliados ao uso de técnicas de regularização e funções de ativação não lineares, era possível treinar redes convolucionais profundas com desempenho superior aos modelos tradicionais de aprendizado de máquina.
 
@@ -319,11 +318,10 @@ Entre os principais bancos de dados, destacamos:
     \item \textbf{ACRIMA} \cite{diaz-pinto2019cnns}: lançado como parte do programa ACRIMA, financiado pelo \textit{Ministerio de Economía y Competitividad} da Espanha, contém 705 imagens rotuladas quanto à presença de glaucoma por dois especialistas.
     \item \textbf{RIM-ONE DL} \cite{rim-one-dl}: lançado em 2020, conta com 485 imagens, todas rotuladas quanto à presença de glaucoma e com anotações de segmentação do disco ótico e da escavação.
     \item \textbf{REFUGE} \cite{refuge}: contendo 1200 imagens, combina informações de diagnóstico de glaucoma e segmentações manuais do disco ótico.
-    \item \textbf{JustRAIGS} \cite{justraigs}: lançado em 2024, é um dos maiores bancos disponíveis, com 101.442 imagens classificadas. Além da classificação principal (referenciável ou não para glaucoma), o JustRAIGS inclui dez anotações adicionais que registram sinais clínicos observados pelos avaliadores para justificar a escolha.
+    \item \textbf{JustRAIGS} \cite{justraigs}: lançado em 2024, é um dos maiores bancos disponíveis, com 101.442 imagens classificadas. Além da classificação principal (referenciável ou não para glaucoma), o JustRAIGS inclui dez anotações adicionais que registram sinais clínicos observados pelos avaliadores para justificar a escolha, tais como "Aparência superior do anel neurorretiniano", "Exposição de vasos circunlineares inferior" ou "Hemorragias de disco".
 \end{itemize}
 
 Um resumo desses conjuntos de dados é apresentado na Tabela~\ref{tab:datasets}.
-
 
 \begin{table}[htb]
     \centering
@@ -586,8 +584,8 @@ Para os casos em que o avaliador julgasse como referenciável para glaucoma, ele
 As anotações adicionais são:
 \begin{itemize}
     \setlength\itemsep{0em}
-    \item \textbf{ANRS}: Aparência do anel neurorretiniano superior (\emph{Appearance neuroretinal rim superiorly})
-    \item \textbf{ANRI}: Aparência do anel neurorretiniano inferior (\emph{Appearance neuroretinal rim inferiorly})
+    \item \textbf{ANRS}: Aparência superior do anel neurorretiniano (\emph{Appearance neuroretinal rim superiorly})
+    \item \textbf{ANRI}: Aparência inferior do anel neurorretiniano (\emph{Appearance neuroretinal rim inferiorly})
     \item \textbf{RNFLDS}: Defeito na camada de fibras nervosas da retina superior (\emph{Retinal nerve fiber layer defect superiorly})
     \item \textbf{RNFLDI}: Defeito na camada de fibras nervosas da retina inferior (\emph{Retinal nerve fiber layer defect inferiorly})
     \item \textbf{BCLVS}: Exposição de vasos circunlineares superior (\emph{Baring circumlinear vessel superiorly})
@@ -602,7 +600,7 @@ Discordâncias nessas anotações adicionais, contudo, não foram resolvidas. Is
 
 % o paragrafo abaixo nao faz mas muito sentido, pois no classificador multilabel não vamos aplica-la. Só foi usada na divisão entre treino e teste
 
-Para obter um valor final às anotações adicionais, no escopo deste trabalho, adotamos a seguinte regra para a resolução de discordância:
+Para obter um valor final às anotações adicionais, no escopo desta seção, adotamos a seguinte regra para a resolução de discordância:
 
 \begin{itemize}[noitemsep,topsep=0pt]
     \item A1 e A2 concordam na anotação principal $\rightarrow$ para cada anotação adicional, valor final é 1 se A1 e A2 marcaram como 1, do contrário 0
@@ -617,33 +615,34 @@ Para obter um valor final às anotações adicionais, no escopo deste trabalho, 
 % A2 e A3 concordam -> interseção entre A2 e A3
 % todos discordam (NRG, U, RG) -> A3
 
-As análises e desenvolvimentos que seguem são baseadas no resultado obtido por meio desta regra.
+As análises que seguem são baseadas no resultado obtido por meio desta regra.
 
 \subsubsection{Análise}
 \label{sec:dataset:analysis}
 Das 101.442 imagens que o conjunto de dados alega possuir, 19 não foram encontradas, restando 101.423. O conjunto é bastante desbalanceado: dentre todas as imagens, apenas 3.270 receberam anotação final para glaucoma, o que representa aproximadamente 3,22\% ou 1 em cada 31.
 
-Das anotações adicionais, ANRI é a mais frequente, aparecendo em 69,08\% dos casos referenciáveis para glaucoma (ou 2,23\% do total), DH por sua vez é a menos frequente, aparecendo em apenas 2,45\% (0,08\%). A quantidade de imagens para cada anotação adicionar é apresentada na Tabela~\ref{tab:features_count}. Devido à resolução de conflitos anterior, algumas imagens RG ficaram sem anotações adicionais. % [LZT] TODO: colocar quantidade
+Das anotações adicionais, ANRI é a mais frequente, aparecendo em 69,08\% dos casos referenciáveis para glaucoma (ou 2,23\% do total), DH por sua vez é a menos frequente, aparecendo em apenas 2,45\% (0,08\%). 
+%A quantidade de imagens para cada anotação adicionar é apresentada na Tabela~\ref{tab:features_count}. Devido à resolução de conflitos anterior, algumas imagens RG ficaram sem anotações adicionais. % [LZT] TODO: colocar quantidade
 É possível observar certas correlações entre as anotações adicionais, apresentadas na Figura~\ref{fig:labels_correlation} por meio de uma matriz de correlação.
 
-\begin{table}[htb]
-    \centering
-    \begin{tabular}{|c|c||c|c|}
-    \hline
-    ANRS & 0 & BCLVI & 0 \\
-    \hline
-    ANRI & 0 & NVT & 0 \\
-    \hline
-    RNFLDS & 0 & DH & 0 \\
-    \hline
-    RNFLDI & 0 & LD & 0 \\
-    \hline
-    BCLVS & 0 & LC & 0 \\
-    \hline
-    \end{tabular}
-    \caption{Quantidade de imagens por anotação adicional}
-    \label{tab:features_count}
-\end{table}
+% \begin{table}[htb]
+%     \centering
+%     \begin{tabular}{|c|c||c|c|}
+%     \hline
+%     ANRS & 0 & BCLVI & 0 \\
+%     \hline
+%     ANRI & 0 & NVT & 0 \\
+%     \hline
+%     RNFLDS & 0 & DH & 0 \\
+%     \hline
+%     RNFLDI & 0 & LD & 0 \\
+%     \hline
+%     BCLVS & 0 & LC & 0 \\
+%     \hline
+%     \end{tabular}
+%     \caption{Quantidade de imagens por anotação adicional}
+%     \label{tab:features_count}
+% \end{table}
 
 \begin{figure}[htb]
  \centering
@@ -744,8 +743,7 @@ O processo de detecção automatizada de glaucoma proposto neste trabalho envolv
 \subsection{Segmentação da região de interesse}
 \label{sec:segmentation}
 
-%% LZT: TODO: missing citation
-As características visuais associadas ao glaucoma, no exame de fundo de olho, estão ou no disco ótico ou em seu entorno. Portanto, para melhor aproveitamento da rede neural classificadora, segmentamos as imagens na região do disco antes de utilizá-las em um classificador.
+As características visuais associadas ao glaucoma, no exame de fundo de olho, estão ou no disco ótico ou em seu entorno \cite{weinreb_2016}. Portanto, para melhor aproveitamento da rede neural classificadora, segmentamos as imagens na região do disco antes de utilizá-las em um classificador.
 
 Para realizar essa segmentação, foi utilizado um modelo de aprendizagem profunda chamado Ultralytics YOLO11, capaz de realizar múltiplas tarefas de visão computacional em tempo real, como detecção de objetos, segmentação, classificação ou estimativa de pose humana. Ele pode ser treinado em novas bases de dados para aplicações específicas. Para cada tarefa existe uma família de modelos com quantidades de parâmetros diferentes \cite{YOLO_2023}. Escolhemos o modelo \emph{yolo11m} para detecção de objetos.
 
@@ -767,7 +765,38 @@ Foi feito o treinamento do segmentador com 100 épocas utilizando os parâmetros
 Em seguida, o segmentador foi aplicado para todo o conjunto de treinamento definido anteriormente na Seção~\ref{sec:dataset:split}. Das 81.138 imagens, em 80.725 (99.49\%) o modelo identificou um disco ótico, em 332 (0.41\%) mais de uma detecção foi retornada e em 81 (0.10\%) nenhuma. Para todas as detecções, utilizamos o \emph{score} mínimo de 0.25, valor padrão do YOLO.
 % [LZT] TODO: rever score mínimo, talvez usar um valor mais alto. inspecionar as imagens com score mais baixo
 
-Analisando as 81 imagens em que nenhuma detecção foi retornada, não conseguimos identificar uma causa predominante para a ausência de detecções. Listamos algumas das características dessas imagens, que se manifestam de formas variadas:
+Analisando as 332 imagens para as quais o modelo retornou mais de uma predição, identificamos alguns artefatos de aquisição predominantes que confundiram o modelo. Algumas imagens com múltiplas detecções são apresentados na Figura~\ref{fig:multiple_boxes}.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/multiple_boxes/TRAIN003802_boxes.jpg}
+        \label{fig:multiple_boxes_1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/multiple_boxes/TRAIN031744_boxes.jpg}
+        \label{fig:multiple_boxes_2}
+    \end{subfigure}
+    \break
+    \begin{subfigure}[b]{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/multiple_boxes/TRAIN011494_boxes.jpg}
+        \label{fig:multiple_boxes_3}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/multiple_boxes/TRAIN031299_boxes.jpg}
+        \label{fig:multiple_boxes_4}
+    \end{subfigure}
+    \caption{Imagens com múltiplas detecções pelo YOLO e score atribuído}
+    \label{fig:multiple_boxes}
+\end{figure}
+
+Por outro lado, analisando as 81 imagens em que nenhuma detecção foi retornada, não conseguimos identificar uma causa predominante para a ausência de detecções. Listamos algumas das características dessas imagens, que se manifestam de formas variadas:
 
 \begin{itemize}[noitemsep,topsep=0pt]
     \item disco ótico com limites pouco definidos
@@ -775,12 +804,6 @@ Analisando as 81 imagens em que nenhuma detecção foi retornada, não conseguim
     \item imagens desfocadas ou com baixa nitidez
     \item lesões ou deformações anatômicas diversas ao redor do disco ótico
 \end{itemize}
-
-
-% LZT:
-% argumentar que optamos por não tentar explorar técnicas de processamento para melhorar a detecção nessas imagens pois:
-% - consideramos que o erro foi muito baixo e seria aceitável clinicamente
-% - não tinhamos certeza das bordas reais do disco ótico, seria uma estimativa de um leigo
 
 Alguns exemplos são apresentados na Figura~\ref{fig:images_no_box}.
 
@@ -813,39 +836,12 @@ Alguns exemplos são apresentados na Figura~\ref{fig:images_no_box}.
     \label{fig:images_no_box}
 \end{figure}
 
-Por outro lado, analisando as 332 imagens para as quais o modelo retornou mais de uma predição, identificamos alguns artefatos de aquisição predominantes que confundiram o modelo. Algumas imagens com múltiplas detecções são apresentados na Figura~\ref{fig:multiple_boxes}.
+% LZT: DONE
+% argumentar que optamos por não tentar explorar técnicas de processamento para melhorar a detecção nessas imagens pois:
+% - consideramos que o erro foi muito baixo e seria aceitável clinicamente
+% - não tinhamos certeza das bordas reais do disco ótico, seria uma estimativa de um leigo
 
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{0.47\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/multiple_boxes/TRAIN003802_boxes.jpg}
-        \label{fig:multiple_boxes_1}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.47\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/multiple_boxes/TRAIN031744_boxes.jpg}
-        \label{fig:multiple_boxes_2}
-    \end{subfigure}
-    \break
-    \begin{subfigure}[b]{0.47\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/multiple_boxes/TRAIN011494_boxes.jpg}
-        \label{fig:multiple_boxes_3}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.47\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/multiple_boxes/TRAIN031299_boxes.jpg}
-        \label{fig:multiple_boxes_4}
-    \end{subfigure}
-    \caption{Imagens com múltiplas detecções pelo YOLO e score atribuído}
-    \label{fig:multiple_boxes}
-\end{figure}
-
-Resolvemos então escolher aleatoriamente 100 imagens dentre as 332 para treinar um novo segmentador. Foram anotadas manualmente e incluídas no conjunto de dados usado anteriormente, 50, 25 e 25 imagens para treino, validação e teste, respectivamente. Um novo treinamento foi feito então, utilizando os mesmos parâmetros do anterior. Devido à falta de experiência, adotamos uma postura cautelosa em não anotar as imagens para as quais o modelo não retornou nenhum resultado. Em uma aplicação real, casos como estes seriam encaminhados para avaliação de um médico. 
-% LZT: podemos levar o argumento das sem detecção  uns paragrafos acima
+Resolvemos então escolher aleatoriamente 100 imagens dentre as 332 com mais de uma detecção para treinar um novo segmentador. Foram anotadas manualmente e incluídas no conjunto de dados usado anteriormente, 50, 25 e 25 imagens para treino, validação e teste, respectivamente. Devido à falta de experiência médica para identificar corretamente o disco ótico  em casos difíceis, adotamos uma postura cautelosa em não anotar as imagens para as quais o modelo não retornou nenhum resultado. Em uma aplicação real, casos como estes seriam encaminhados para avaliação de um médico. Um novo treinamento foi feito então, utilizando os mesmos parâmetros do anterior.
 
 Desta vez, na validação o modelo atingiu precisão e recall 1, mAP50 0.995 e mAP50-95 0.944, enquanto que no teste atingiu precisão 0.999, recall 0.991 mAP50 0.995 e mAP50-95 0.934.
 
@@ -904,7 +900,7 @@ Durante o treinamento, aplicamos algumas técnicas de aumentação de dados nas 
 Inicialmente experimentamos apenas com as transformações de translação, rotação, zoom e espelhamento, chamadas de transformações geométricas, que apenas movimentam a imagem. Posteriormente, experimentamos com as transformações de brilho, cor e contraste, chamadas de transformações fotométricas, que alteram o valores dos pixels.
 
 % TODO adicionar figura com as aumentações
-A Figura x mostra alguns exemplos de imagens antes e depois de passarem pelas transformações.
+% A Figura x mostra alguns exemplos de imagens antes e depois de passarem pelas transformações.
 
 Fizemos experimentos com dois processos de treinamento: em duas etapas e em etapa única. O processo de duas etapas consiste em dividir o treinamento em uma primeira fase em que os pesos do modelo original são congelados e somente os pesos da novas camadas superiores são ajustados e em uma segunda fase, conhecida como ajuste fino (\emph{fine-tuning}), em que todos os pesos são descongelados e o modelo é ajustado por inteiro a uma taxa de aprendizagem inferior. O processo de etapa única é equivalente ao ajuste fino, o treinamento já se inicia ajustando todos os pesos da rede à uma taxa de aprendizagem baixa.
 
@@ -1021,7 +1017,8 @@ Para a avaliação do desempenho do classificador multi-rótulo, utilizamos uma 
 
 % LZT TODO inlcuir Subset Accuracy
 
-No conjunto de validação, o modelo atingiu uma distância de Hamming média de $X$, precisão $Y$, sensitividade (recall) $Z$ e F1-score $W$, estas três últimas calculadas com média micro. Para fins de comparação, avaliamos um classificador trivial que prevê a ausência de todas as razões (todos os rótulos iguais a zero) para todas as imagens. Esse classificador \textit{baseline} obteve uma distância de Hamming média de 0,28819, demonstrando que o modelo treinado superou a estratégia básica.
+No conjunto de validação, o modelo atingiu uma distância de Hamming média de 0,12247. Para fins de comparação, avaliamos um classificador trivial que prevê a ausência de todas as razões (todos os rótulos iguais a zero) para todas as imagens. Esse classificador \textit{baseline} obteve uma distância de Hamming média de 0,28819, demonstrando que o modelo treinado superou a estratégia básica.
+% No conjunto de validação, o modelo atingiu uma distância de Hamming média de X, precisão Y, sensitividade (recall) Z e F1-score W, estas três últimas calculadas com média micro.
 
 \subsection{Recursos computacionais}
 \label{sec:resources}
@@ -1033,36 +1030,7 @@ O computador estava equipado com um processador Intel i7-10700K, 32 GB de RAM e 
 \section{Resultados}
 \label{sec:results}
 
-
-% >>> RESULTADOS DO PGC 2
-% O melhor resultado foi obtido no experimento que utilizou o otimizador ADAM. No conjunto de validação, o modelo atingiu AUC-ROC 0,9789, PRC 0,9503, F1 0,9180, precisão 0,9060 e recall 0,9304. Foram necessárias 92 epochs na primeira etapa e 33 epochs na etapa de ajuste fino. A Figura~\ref{fig:gen2_005_tt_metrics} apresenta as métricas durante a primeira fase, a Figura~\ref{fig:gen2_005_ft_metrics} métricas do ajuste fino e na Figura~\ref{fig:gen2_005_confusion_matrix} apresentamos a matriz de confusão.
-
-% \begin{figure}[ht]
-%  \centering
-%  \includegraphics[width=1.0\textwidth]{images/gen2_005/top_training_metrics.png}
-%  \caption{Métricas da primeira etapa de treinamento do classificador}
-%  \label{fig:gen2_005_tt_metrics}
-% \end{figure}
-
-% \begin{figure}[h!t]
-%  \centering
-%  \includegraphics[width=1.0\textwidth]{images/gen2_005/fine_tuning_metrics.png}
-%  \caption{Métricas da etapa de ajuste fino do classificador}
-%  \label{fig:gen2_005_ft_metrics}
-% \end{figure}
-
-% \begin{figure}[htb]
-%  \centering
-%  \includegraphics[width=0.6\textwidth]{images/gen2_005/conf.png}
-%  \caption{Matriz de confusão do classificador}
-%  \label{fig:gen2_005_confusion_matrix}
-% \end{figure}
-
-% <<<
-
-
-
-
+Esta seção apresenta os resultados obtidos pelo sistema proposto no conjunto de teste definido na Seção~\ref{sec:dataset:split}, que não foi utilizado em nenhuma etapa de desenvolvimento. Este conjunto visa avaliar a capacidade de generalização dos modelos, isto é, seu desempenho em casos nunca antes vistos.
 
 % FASE FINAL COM CONJUNTO DE TESTE (HOLDOUT)
 % SEGMENTADOR
@@ -1076,41 +1044,78 @@ O computador estava equipado com um processador Intel i7-10700K, 32 GB de RAM e 
 %   Median score: 0.927
 %   Min score: 0.264
 %   Max score: 0.951
-%
-%
-%
-%
-%
-%
 
+Inicialmente, o segmentador foi aplicado a todas as 20.285 imagens do conjunto de teste. Ele retornou exatamente uma detecção de disco óptico em 20.247 imagens (99,81\%), mais de uma detecção em 19 imagens (0,09\%) e nenhuma detecção em outras 19 imagens (0,09\%). A pontuação média das detecções foi de 0,922, com mediana de 0,927. Entre as imagens anotadas como glaucoma, apenas duas não tiveram detecção.
+% TRAIN054105, TRAIN058447 - RG sem detecção
 
+As imagens com exatamente uma detecção foram então avaliadas pelo classificador binário. Diferentes modelos, treinados em diversas configurações, foram testados. O modelo 026, treinado em etapa única com todas as técnicas de aumentação e utilizando a menor arquitetura entre as avaliadas, apresentou o melhor desempenho no conjunto de teste. Este modelo havia obtido o segundo melhor desempenho na etapa de validação. No teste, atingiu sensitividade de 0,8972 em 95\% de especificidade mínima, AUC-ROC de 0,9781, especificidade de 0,9691, sensitividade de 0,8543 e precisão de 0,4789. A Tabela~\ref{tab:resultados_modelos_test} apresenta o resumo das métricas para este e outros modelos avaliados.
 
 \begin{table}[h]
     \centering
-    \caption{Resultados dos modelos avaliados no conjunto de teste}
-    \begin{tabularx}{\textwidth}{l*{4}{>{\centering\arraybackslash}X}}
+    \caption{Resultados dos modelos avaliados no conjunto de teste.}
+    \begin{tabularx}{\textwidth}{l*{5}{>{\centering\arraybackslash}X}}
     \toprule
-    \textbf{Nome} & \textbf{Sens. at 95\%} & \textbf{AUC-ROC} & \textbf{Precisão} & \textbf{Recall} \\
+    \textbf{Nome} & \textbf{Sens. em 95\% (\%)} & \textbf{AUC-ROC} & \textbf{Especif. (\%)} & \textbf{Sensitiv. (\%)} & \textbf{Precisão (\%)} \\
     \midrule
-    018 & 0,8773 & 0,9725 & 0,4408 & 0,8451 \\
-    023 & 0,8758 & 0,9741 & 0,4188 & 0,8420 \\
-    025 & 0,8819 & 0,9765 & 0,4558 & 0,8390 \\
-    026 & 0,8972 & 0,9781 & 0,4789 & 0,8543 \\
+    018 & 87,73 & 0,9726 & 96,43 & 84,51 & 44,08\\
+    023 & 87,58 & 0,9741 & 96,11 & 84,20 & 41,88\\
+    025 & 88,19 & 0,9765 & 96,67 & 83,90 & 45,58\\
+    026 & 89,72 & 0,9781 & 96,91 & 85,43 & 47,89\\
     \bottomrule
     \end{tabularx}
     \label{tab:resultados_modelos_test}
 \end{table}
 
+Em seguida, dentre as 20.247 imagens com detecção única, 652 possuíam anotação positiva para glaucoma. Estas foram avaliadas pelo classificador multi-rótulo, que obteve distância de Hamming de 0,12960, valor ligeiramente superior ao obtido na validação (0,12247), mas consideravelmente inferior ao baseline (0,28819) obtido por um classificador ingênuo.
 
+Os resultados obtidos evidenciam a capacidade do sistema proposto em realizar a triagem de glaucoma e justificar suas decisões de forma interpretável.
 
 \section{Conclusões e Trabalhos Futuros}
 \label{sec:conclusions}
 
-% Neste trabalho foi apresentado um modelo capaz de detectar o disco ótico em imagens de fundo de olho, que obteve precisão 0.999, recall 0.991 mAP50 0.995 e mAP50-95 0.934.
+Este trabalho propôs o desenvolvimento de um sistema baseado em aprendizagem profunda para a detecção automatizada de casos de glaucoma referível em imagens de fundo de olho, utilizando a segmentação do disco óptico, a classificação binária de referibilidade e a identificação multi-rótulo das características clínicas justificadoras. Foram empregados redes neurais convolucionais modernas, técnicas de aumento de dados e estratégias de regularização no treinamento dos modelos.
 
-% Destacamos o impacto positivo em se fazer uma curadoria adicional no conjunto de dados, em busca de casos difíceis para incluí-los no treinamento do modelo. Tal abordagem possibilitou reduzir o número de ambiguidades, apesar da ligeira queda de desempenho no teste. Essa queda pode ser justificada pela inclusão super representada de casos mais difíceis.
+No conjunto de teste definido, o sistema atingiu uma sensitividade de 89,72\% em 95\% de especificidade mínima e uma AUC-ROC de 0,9781 na tarefa de classificação binária. Para a tarefa de classificação multi-rótulo, obteve distância de Hamming de 0,12960, superando significativamente o baseline de 0,28819 correspondente a um classificador ingênuo.
 
-% Também apresentamos um classificador preliminar obtido do treinamento de uma CNN da arquitetura ResNet50, por meio de transferência de aprendizagem, capaz de identificar glaucoma em imagens de fundo de olho. O modelo apresentou uma performance ligeiramente abaixo de trabalhos relacionados, mas é esperado que haja uma melhora com o uso de outras técnicas de aumentação de dados, normalização dos dados de entrada e melhor aproveitamento do conjunto de dados.
+Comparando com trabalhos relacionados desenvolvidos com o mesmo conjunto de dados JustRAIGS, o desempenho do sistema posiciona-se de maneira competitiva.  
+Na tarefa de classificação binária, Kubrak \cite{justraigs_kubrak} atingiu sensitividade de 90,90\% em 95\% de especificidade no conjunto de testes da competição, enquanto Lin et al. \cite{justraigs_hu_lin} obtiveram 85,70\%. Nosso sistema obteve 89,72\% no conjunto de teste interno.
+Na tarefa multi-rótulo, Kubrak reportou distância de Hamming de 0,1280, Lin et al. \cite{justraigs_hu_lin} reportaram 0,1250, enquanto Zhang et al. \cite{justraigs_zhang} reportaram 0,239. O sistema proposto apresentou desempenho próximo desses trabalhos, com distância de Hamming de 0,12960, utilizando uma arquitetura mais simples e sem a aplicação de ensembles ou transformers.
+
+Cabe ressaltar que os resultados apresentados não são diretamente comparáveis, uma vez que foram avaliados em conjuntos de teste distintos. Apesar disso, o uso de um conjunto de teste separado e não utilizado durante o treinamento permite uma comparação aproximada, fornecendo uma referência válida sobre o posicionamento do sistema proposto frente aos métodos existentes.
+
+Desta maneira, evidenciamos que os objetivos propostos foram atingidos:
+\begin{itemize}[noitemsep]
+    \item Desenvolvemos um método de segmentação do disco óptico com taxa de sucesso de 99,81\%;
+    \item Apresentamos um classificador binário que atingiu desempenho robusto para a triagem de glaucoma;
+    \item Apresentamos um classificador multi-rótulo que atingiu desempenho comparável com os disponíveis na literatura no apontamento das razões clínicas que justificam a decisão;
+    \item Avaliamos o desempenho em cada tarefa com métricas relevantes;
+    \item Comparamos os resultados obtidos com trabalhos recentes da literatura.
+\end{itemize}
+
+% LZT para CSS: o que mais podemos colocar?
+Entre as limitações do trabalho, destaca-se que o sistema foi avaliado apenas em um único conjunto de dados, sem validação externa em outras bases ou contextos clínicos. % de modo a avaliar a capacidade de generalização em outros conjuntos de dados, problema comum no uso de deep learnign em imagens de fundo de olho \cite{li_review_2021}.
+
+Como trabalhos futuros, propõe-se:
+\begin{itemize}[noitemsep]
+    \item Investigar arquiteturas de última geração, como Vision Transformers (ViT), para segmentação e classificação;
+    \item Explorar métodos de interpretabilidade visual para explicar as decisões do modelo;
+    \item Realizar testes em bases de dados adicionais e avaliações clínicas no mundo real.
+\end{itemize}
+
+Os resultados obtidos indicam que sistemas baseados em aprendizagem profunda apresentam grande potencial como ferramenta de apoio à triagem de glaucoma, contribuindo para o diagnóstico precoce e a redução da cegueira potencialmente evitável.
+
+% discussão legal do kubrak
+% During the creation of the JustRAIGS dataset, Lemij et al. (2023) re-
+% quired graders to pass the European Optic Disc Assessment Trial (EODAT)
+% with an overall accuracy of at least 85% and specificity of 92% or above.
+% Out of 90 experienced ophthalmologists and optometrists, only 30 passed
+% this threshold (Lemij et al., 2023). Given that our pipeline achieved an
+% accuracy of 94.49% and 95% specificity, it would likely also pass the EO-
+% 5 discussion and conclusion 17
+% DAT test. However, the third graders responsible for resolving conflicts in
+% labeling needed to have a minimum accuracy of 95% (Lemij et al., 2023).
+% Our architecture performed slightly below this threshold, therefore not
+% outperforming the best clinicians
 
 
 % [LZT] aprendizados pessoais:
