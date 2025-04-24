@@ -17,8 +17,26 @@
 \usepackage[hidelinks]{hyperref} % referencas dentro do documento
 
 
-% \usepackage{tikz}
-% \usetikzlibrary{arrows.meta, positioning}
+
+
+% BEGIN RASCUNHO
+% \usepackage{datetime2}
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
+% \fancyhf{} % limpa tudo
+% \fancyhead[L]{\scriptsize\textsf{VERSÃO PRELIMINAR}} % texto pequeno no canto esquerdo do rodapé
+% \fancyhead[R]{\scriptsize\textsf{\DTMnow}} % texto pequeno no canto esquerdo do rodapé
+% \renewcommand{\headrulewidth}{0pt} % remove linha do cabeçalho
+% \renewcommand{\footrulewidth}{0pt} % remove linha do rodapé
+
+% \usepackage{draftwatermark}
+% \SetWatermarkText{\textsf{RASCUNHO}}
+% \SetWatermarkScale{3}
+% END RASCUNHO
+
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
 
 \geometry{
     a4paper,
@@ -48,6 +66,9 @@
 
 %% TODO:
 % - Resolver a questão com biblatex no overleaf
+
+% LZT (23/04/25) fiz alteração manual para and others no bib e parece ter resolvido. tambem mudei o estilo das referencias
+
 \title{TÍTULO}
 \author{autor}
 
@@ -55,30 +76,26 @@
 
 % CAPA
 \thispagestyle{empty}
-    \begin{flushright}
-        \begin{huge}
-            \textbf{RELATÓRIO}\\[3,5cm]
-        \end{huge}
-%% CSS: Podemos usar um título mais genérico agora e depois discutir um definitivo
-{\bf \LARGE  CLASSIFICAÇÃO DE GLAUCOMA EM IMAGENS DE FUNDO DE OLHO COM APRENDIZAGEM PROFUNDA}
-
-\bigskip
-        
-        Leandro Zangirolami Trovões (Orientando)\\
-        Carlos da Silva dos Santos (Orientador)\\
-        Universidade Federal do ABC\\[5,5cm]
-    \end{flushright}
-
-    \vfill
-    
-    \begin{center}
-        Santo André,\\
-        Abril de 2025
-    \end{center}
-    
+\begin{flushright}
+    \begin{huge}
+     \textbf{RELATÓRIO}\\[3,5cm]
+    \end{huge}
+    %% CSS: Podemos usar um título mais genérico agora e depois discutir um definitivo
+    {\bf \LARGE  CLASSIFICAÇÃO DE GLAUCOMA EM IMAGENS DE FUNDO DE OLHO COM APRENDIZAGEM PROFUNDA}\\
+    \bigskip 
+    Leandro Zangirolami Trovões (Orientando)\\
+    Carlos da Silva dos Santos (Orientador)\\
+    Universidade Federal do ABC\\[5,5cm]
+\end{flushright}
+\vfill
+\begin{center}
+    Santo André,\\
+    Abril de 2025
+\end{center}
 \newpage
 
 
+% RESUMO
 \begin{center}
 \noindent{\bf \Large Resumo}
 \end{center}
@@ -430,7 +447,7 @@ A competição é dividida em duas tarefas: (i) a classificação binária entre
 
 O conjunto de treinamento, disponibilizado publicamente, contém 101.442 imagens anotadas. O conjunto de teste, composto por 9.741 imagens, será mantido privado e utilizado exclusivamente para a avaliação dos modelos submetidos.
 
-A avaliação da tarefa de classificação binária será baseada na sensitividade em um ponto de operação de 95\% de especificidade. Já a avaliação da tarefa multi-rótulo utilizará uma distância de Hamming modificada, que desconsidera rótulos nos quais os avaliadores humanos não concordaram. Mais adiante iremos retomar a discussão sobre estas métricas.
+A avaliação da tarefa de classificação binária foi baseada na sensitividade em um ponto de operação de 95\% de especificidade. Já a avaliação da tarefa multi-rótulo utilizou uma distância de Hamming modificada, que desconsidera rótulos nos quais os avaliadores humanos não concordaram. Mais adiante iremos retomar a discussão sobre estas métricas.
 
 Diversos trabalhos recentes foram publicados em virtude da competição do ISBI 2024. A Tabela~\ref{tab:justraigs_work} mostra um resumo dos trabalhos apresentados a seguir.
 
@@ -488,7 +505,7 @@ Lin et al. \cite{justraigs_hu_lin} também utilizaram YOLOv8 para segmentação 
     \bottomrule
     \end{tabularx}
     \renewcommand{\arraystretch}{1}
-    \caption{Resumo de trabalhos utilizando o conjunto JustRAIGS. Valores marcados com asterisco (*) correspondem a métricas obtidas em subconjuntos de validação; os demais valores foram reportados conjunto de teste da competição.}
+    \caption{Resumo de trabalhos utilizando o conjunto JustRAIGS. Valores marcados com asterisco (*) correspondem a métricas obtidas em subconjuntos de validação; os demais valores foram reportados no conjunto de teste da competição.}
     \label{tab:justraigs_work}
 \end{table}
 
@@ -783,10 +800,41 @@ O conjunto de dados foi dividido na proporção 80\% para treinamento e 20\% par
 \subsection{Sistema proposto}
 \label{sec:pipeline}
 
-O processo de detecção automatizada de glaucoma proposto neste trabalho envolve três etapas principais: (i) a segmentação do disco óptico na imagem de fundo de olho; (ii) a classificação da imagem como caso referenciável (RG) ou não referenciável (NRG), com base na região segmentada; e (iii) a identificação das razões que justificam a referência, por meio de um classificador multi-rótulo (\emph{multi-label}), utilizando nas anotações adicionais presentes no JustRAIGS.
+O processo de detecção automatizada de glaucoma proposto neste trabalho envolve três etapas principais: (i) a segmentação do disco óptico na imagem de fundo de olho; (ii) a classificação da imagem como caso referenciável (RG) ou não referenciável (NRG), com base na região segmentada; e (iii) a identificação das razões que justificam a referência, por meio de um classificador multi-rótulo (\emph{multi-label}), utilizando nas anotações adicionais presentes no JustRAIGS. A Figura~\ref{fig:proposed_system} mostra um diagrama do sistema.
 
+\begin{figure}[h!]
+\centering
+\scalebox{0.85}{
+    \begin{tikzpicture}[
+        node distance=2.5cm and 1.8cm,
+        every node/.style={draw, align=center, rounded corners, font=\small, minimum width=2.8cm, minimum height=1cm},
+        arrow/.style={-Latex, thick}
+    ]
+    
+    % Nodes
+    \node (input) {Imagem de\\fundo de olho};
+    \node (segmentador) [right=of input] {Segmentador de\\Disco Óptico};
+    \node (classificador_bin) [right=of segmentador] {Classificador Binário\\(RG ou NRG)};
+    \node (saida_bin) [above=of classificador_bin, draw=none] {Saída: RG ou NRG};
+    \node (classificador_multi) [right=of classificador_bin] {Classificador\\Multi-rótulo\\(10 razões)};
+    \node (saida_multi) [above=of classificador_multi, draw=none] {Saída: Razões};
+    \node (saida_failure) [above=of segmentador, draw=none] {Saída: Falha na segmentação};
+    
+    % Connections
+    \draw[arrow] (input) -- (segmentador);
+    \draw[arrow] (segmentador) -- (classificador_bin) node[midway, below, font=\scriptsize, draw=none, fill=none] {Disco\\encontrado};
+    \draw[arrow] (segmentador.north) -- (saida_failure) node[midway, right, font=\scriptsize, draw=none, fill=none] {Falha na\\segmentação};
+    \draw[arrow] (classificador_bin) -- (classificador_multi);
+    \draw[arrow] (classificador_bin) -- (classificador_multi) node[midway, below, font=\scriptsize, draw=none, fill=none] {Se RG};
+    \draw[arrow] (classificador_bin.north) -- (saida_bin.south);
+    \draw[arrow] (classificador_multi.north) -- (saida_multi.south);
+    
+    \end{tikzpicture}
+}
+\caption{Diagrama do sistema proposto.}
+\label{fig:proposed_system}
+\end{figure}
 
-% LZT TODO: diagrama
 
 
 % Essa abordagem permite que os classificadores se concentrem exclusivamente nas regiões de interesse...
@@ -905,17 +953,12 @@ Desta vez, na validação o modelo atingiu precisão e recall 1, mAP50 0.995 e m
 
 Ao aplicar a segunda geração em todo o conjunto de treino, desta vez, o modelo identificou apenas um disco ótico em 81.016 imagens (99.85\%), mais de um em 63 (0.08\%) e nenhum em 59 (0.07\%).
 
-% DRAFT: No conjunto de teste (holdout) definida na Seção _ com 20k imagens, o modelo identificou apenas um disco em _ (_ %), mais de um em _ (_ %) e nenhum em _ (_ %) imagens.
-
 % IMAGENS USADAS NO YOLO
 %       gen1  new  gen2
 % total 1400  100  1500
 % train 1000   50  1050
 % val    200   25   225
 % test   200   25   225
-
-
-% As coordenadas obtidas pelo segmentador foram então utilizadas para recortar a região do disco óptico nas imagens originais. Essas regiões recortadas serviram como entrada para a próxima etapa da pipeline: a classificação de casos de glaucoma.
 
 
 \subsection{Classificação binária}
@@ -933,7 +976,7 @@ As imagens disponíveis no conjunto de treino definido na Seção~\ref{sec:datas
 %% LZT: sim, o espelhamento acontece nas duas etapas, dessa maneira as imagens RG vão ser vistas duas vezes, mas com aumentações diferentes
 %% LZT: agora percebi que a proporção entre as classes ficou diferente no conjunto de treinamento (1:2) e no de validação (1:4). Isso é um problema? Talvez precise explicar melhor isso no texto
 
-Com o objetivo de contornar o desbalanceamento entre as duas classes, todas as 2.610 imagens RG disponíveis no conjunto de treinamento foram espelhadas horizontalmente e salvas como novas imagens. Além disso, apenas um subconjunto de 10 mil imagens NRG aleatoriamente selecionadas foi utilizado, resultando em uma proporção entre as duas classes de aproximadamente 1 RG para 2 NRG. Em números absolutos, foram no conjunto de treinamento 4176 (2088 x 2) imagens RG e 8000 imagens NRG, enquanto que para validação foram 522 e 2000 imagens de cada classe respectivamente. Também experimentamos uma subamostragem de NRG mais agressiva, para que a proporção fosse de 1 para 3, mas essa configuração apresentou resultado inferior à anterior.
+Com o objetivo de contornar o desbalanceamento entre as duas classes, todas as 2.610 imagens RG disponíveis no conjunto de treinamento foram espelhadas horizontalmente e salvas como novas imagens. Além disso, apenas um subconjunto de 10 mil imagens NRG aleatoriamente selecionadas foi utilizado, resultando em uma proporção entre as duas classes de aproximadamente 1 RG para 2 NRG. Em números absolutos, foram no conjunto de treinamento 4176 (2088 x 2) imagens RG e 8000 imagens NRG, enquanto que para validação foram 522 e 2000 imagens de cada classe respectivamente. Como não aplicamos o espelhamento no conjunto de validação, a proporção foi de aproximadamente 1 RG para 4 NRG. Também experimentamos uma subamostragem de NRG mais agressiva, para que a proporção fosse de 1 para 3, mas essa configuração apresentou resultado inferior à anterior.
 
 Antes de serem utilizadas no classificador, todas as imagens foram recortadas no entorno do disco ótico detectado pelo segmentador. A região do corte foi definida com as coordenadas retornadas pelo modelo, acrescidas de uma margem de 50\% para cada eixo.
 
@@ -955,10 +998,14 @@ Durante o treinamento, aplicamos algumas técnicas de aumentação de dados nas 
     \item \textbf{Cor}: converte a imagem de RGB para HSV, ajusta aleatoriamente o canal de cor (hue) e converte de volta para RGB
 \end{itemize}
 
-Inicialmente experimentamos apenas com as transformações de translação, rotação, zoom e espelhamento, chamadas de transformações geométricas, que apenas movimentam a imagem. Posteriormente, experimentamos com as transformações de brilho, cor e contraste, chamadas de transformações fotométricas, que alteram o valores dos pixels.
+Inicialmente experimentamos apenas com as transformações de translação, rotação, zoom e espelhamento, chamadas de transformações geométricas, que apenas movimentam a imagem. Posteriormente, experimentamos com as transformações de brilho, cor e contraste, chamadas de transformações fotométricas, que alteram o valores dos pixels. A Figura~\ref{fig:augmentations} mostra alguns exemplos de imagens antes e depois de passarem pelas transformações.
 
-% TODO adicionar figura com as aumentações
-% A Figura x mostra alguns exemplos de imagens antes e depois de passarem pelas transformações.
+\begin{figure}[htb]
+ \centering
+ \includegraphics[width=1.0\textwidth]{images/augmentations.jpg}
+ \caption{Imagens originais e após aplicação das aumentações de dados.}
+ \label{fig:augmentations}
+\end{figure}
 
 Fizemos experimentos com dois processos de treinamento: em duas etapas e em etapa única. O processo de duas etapas consiste em dividir o treinamento em uma primeira fase em que os pesos do modelo original são congelados e somente os pesos da novas camadas superiores são ajustados e em uma segunda fase, conhecida como ajuste fino (\emph{fine-tuning}), em que todos os pesos são descongelados e o modelo é ajustado por inteiro a uma taxa de aprendizagem inferior. O processo de etapa única é equivalente ao ajuste fino, o treinamento já se inicia ajustando todos os pesos da rede à uma taxa de aprendizagem baixa.
 
@@ -995,15 +1042,15 @@ A Tabela~\ref{tab:resultados_modelos_val} apresenta os resultados obtidos pelos 
 \begin{table}[h]
     \centering
     \caption{Resultados dos modelos avaliados no conjunto de validação}
-    \begin{tabularx}{\textwidth}{l*{4}{>{\centering\arraybackslash}X}}
+    \begin{tabularx}{\textwidth}{l*{5}{>{\centering\arraybackslash}X}}
     \toprule
-    \textbf{Nome} & \textbf{Sens. em 95\%} & \textbf{AUC-ROC} & \textbf{Precisão} & \textbf{Recall}  \\
+    \textbf{Nome} & \textbf{Sens. em 95\%} & \textbf{AUC-ROC} & \textbf{Especif.} & \textbf{Sensitiv.} & \textbf{Precisão} \\
     \midrule
-    018 & 0,9023 & TODO   & 0,8681 & 0,8448  \\
-    021 & 0,8851 & TODO   & 0,8665 & 0,8084  \\
-    023 & 0,9061 & TODO   & 0,8723 & 0,8506  \\
-    025 & 0,9387 & TODO   & 0,9098 & 0,8506  \\
-    026 & 0,9215 & TODO   & 0,8955 & 0,8372  \\
+    018 & 0,9023 & 0,9764 & 0,9665 & 0,8448 & 0,8681 \\
+    021 & 0,8851 & 0,9724 & 0,9675 & 0,8084 & 0,8665 \\
+    023 & 0,9061 & 0,9746 & 0,9675 & 0,8506 & 0,8723 \\ % sens 95 deu 0.9080 offline
+    025 & 0,9387 & 0,9807 & 0,9780 & 0,8506 & 0,9098 \\
+    026 & 0,9215 & 0,9806 & 0,9745 & 0,8391 & 0,8957 \\
     \bottomrule
     \end{tabularx}
     \label{tab:resultados_modelos_val}
@@ -1113,16 +1160,18 @@ As imagens com exatamente uma detecção foram então avaliadas pelo classificad
     \caption{Resultados dos modelos avaliados no conjunto de teste.}
     \begin{tabularx}{\textwidth}{l*{5}{>{\centering\arraybackslash}X}}
     \toprule
-    \textbf{Nome} & \textbf{Sens. em 95\% (\%)} & \textbf{AUC-ROC} & \textbf{Especif. (\%)} & \textbf{Sensitiv. (\%)} & \textbf{Precisão (\%)} \\
+    \textbf{Nome} & \textbf{Sens. em 95\%} & \textbf{AUC-ROC} & \textbf{Especif.} & \textbf{Sensitiv.} & \textbf{Precisão} \\
     \midrule
-    018 & 87,73 & 0,9726 & 96,43 & 84,51 & 44,08\\
-    023 & 87,58 & 0,9741 & 96,11 & 84,20 & 41,88\\
-    025 & 88,19 & 0,9765 & 96,67 & 83,90 & 45,58\\
-    026 & 89,72 & 0,9781 & 96,91 & 85,43 & 47,89\\
+    018 & 0,8773 & 0,9726 & 0,9643 & 0,8451 & 0,4408\\
+    023 & 0,8758 & 0,9741 & 0,9611 & 0,8420 & 0,4188\\
+    025 & 0,8819 & 0,9765 & 0,9667 & 0,8390 & 0,4558\\
+    026 & 0,8972 & 0,9781 & 0,9691 & 0,8543 & 0,4789\\
     \bottomrule
     \end{tabularx}
     \label{tab:resultados_modelos_test}
 \end{table}
+
+É importante observar que a precisão obtida no conjunto de teste (0,4789) é substancialmente menor do que aquela observada na validação (0,8957), o que pode causar estranheza à primeira vista. No entanto, essa diferença é explicada pela proporção entre as classes nos conjuntos: enquanto o conjunto de validação foi balanceado para conter aproximadamente 1 imagem RG a cada 4 NRG, no conjunto de teste a proporção realista é de 1 RG para 31 NRG, a mesma do JustRAIGS como um todo. Como consequência, mesmo uma pequena taxa de falsos positivos resulta em um grande número absoluto de erros em comparação à quantidade de verdadeiros positivos, o que reduz a precisão. Apesar disso, a sensitividade em 95\% de especificidade foi mantida em um patamar elevado (89,72\%), o que reforça a robustez do modelo na triagem de glaucoma mesmo sob forte desbalanceamento.
 
 Em seguida, dentre as 20.247 imagens com detecção única, 652 possuíam anotação positiva para glaucoma. Estas foram avaliadas pelo classificador multi-rótulo, que obteve distância de Hamming de 0,12960, valor ligeiramente superior ao obtido na validação (0,12247), mas consideravelmente inferior ao baseline (0,28819) obtido por um classificador ingênuo.
 
